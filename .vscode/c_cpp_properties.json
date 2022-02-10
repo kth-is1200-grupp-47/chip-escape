@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/opt/mcb32tools/include",
+                "${workspaceFolder}"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/mcb32tools/bin/mipsel-mcb32-elf-gcc",
+            "cStandard": "gnu11",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [
+                "-ffreestanding",
+                "-march=mips32r2",
+                "-msoft-float",
+                "-Wa,-msoft-float"
+            ]
+        }
+    ],
+    "version": 4
+}
