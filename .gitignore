@@ -2,4 +2,6 @@
 *.a
 *.elf
 *.hex
+
 .deps
+bin

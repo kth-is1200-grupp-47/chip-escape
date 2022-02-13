@@ -12,22 +12,27 @@ PROGNAME	= chip-escape
 LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 
 # Compiler and linker flags
-CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu11
+CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu11 -O2 -I"$(shell pwd)"
 ASFLAGS		+= -msoft-float
 LDFLAGS		+= -T $(LINKSCRIPT) -lc -lm
 
 # Filenames
-ELFFILE		= $(PROGNAME).elf
-HEXFILE		= $(PROGNAME).hex
+BINDIR      = bin
+ELFFILE		= $(BINDIR)/$(PROGNAME).elf
+HEXFILE		= $(BINDIR)/$(PROGNAME).hex
 
 # Find all source files automatically
-CFILES          = $(wildcard *.c)
-ASFILES         = $(wildcard *.S)
-SYMSFILES	= $(wildcard *.syms)
+# Modified by Hannes Mann to include subdirectories
+CFILES_ALL  = $(wildcard *.c) $(wildcard */*.c)
+
+# Exclude files from data directory which are built by a separate makefile
+CFILES      = $(filter-out data/%.c,$(CFILES_ALL))
+ASFILES     = $(wildcard *.S) $(wildcard */*.S)
+SYMSFILES   = $(wildcard *.syms) $(wildcard */*.syms)
 
 # Object file names
-OBJFILES        = $(CFILES:.c=.c.o)
-OBJFILES        +=$(ASFILES:.S=.S.o)
+OBJFILES    = $(CFILES:.c=.c.o)
+OBJFILES    +=$(ASFILES:.S=.S.o)
 OBJFILES	+=$(SYMSFILES:.syms=.syms.o)
 
 # Hidden directory for dependency files
@@ -39,9 +44,12 @@ df = $(DEPDIR)/$(*F)
 
 all: $(HEXFILE)
 
+# Build data into object files that are linked to the final binary
+include data/Makefile
+
 clean:
-	$(RM) $(HEXFILE) $(ELFFILE) $(OBJFILES)
-	$(RM) -R $(DEPDIR)
+	$(RM) $(OBJFILES)
+	$(RM) -R $(DEPDIR) $(BINDIR)
 
 envcheck:
 	@echo "$(TARGET)" | grep mcb32 > /dev/null || (\
@@ -57,13 +65,13 @@ envcheck:
 install: envcheck
 	$(TARGET)avrdude -v -p $(shell echo "$(DEVICE)" | tr '[:lower:]' '[:upper:]') -c stk500v2 -P "$(TTYDEV)" -b $(TTYBAUD) -U "flash:w:$(HEXFILE)"
 
-$(ELFFILE): $(OBJFILES) envcheck
+$(ELFFILE): $(OBJFILES) $(BINDIR) envcheck
 	$(CC) $(CFLAGS) -o $@ $(OBJFILES) $(LDFLAGS)
 
-$(HEXFILE): $(ELFFILE) envcheck
+$(HEXFILE): $(ELFFILE) $(BINDIR) envcheck
 	$(TARGET)bin2hex -a $(ELFFILE)
 
-$(DEPDIR):
+$(DEPDIR) $(BINDIR):
 	@mkdir -p $@
 
 # Compile C files
