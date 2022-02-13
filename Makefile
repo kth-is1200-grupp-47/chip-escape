@@ -25,8 +25,8 @@ HEXFILE		= $(BINDIR)/$(PROGNAME).hex
 # Modified by Hannes Mann to include subdirectories
 CFILES_ALL  = $(wildcard *.c) $(wildcard */*.c)
 
-# Exclude files from data directory which are built by a separate makefile
-CFILES      = $(filter-out data/%.c,$(CFILES_ALL))
+# Exclude files from builder directory which are built by a separate makefile
+CFILES      = $(filter-out data/builder/%.c,$(CFILES_ALL))
 ASFILES     = $(wildcard *.S) $(wildcard */*.S)
 SYMSFILES   = $(wildcard *.syms) $(wildcard */*.syms)
 

@@ -17,6 +17,7 @@
 #define IMAGE_DATA(name) (&_binary_data_images_ ## name ## _png_start[2])
 
 /* Access a pixel of an image. The image pointer should be retrieved with IMAGE_DATA(name). */
-bool image_bit(unsigned char* image, int x, int y);
+#define IMAGE_BIT(name, x, y) _image_bit(IMAGE_DATA(name), x, y)
+bool _image_bit(unsigned char* image, int x, int y);
 
 #endif

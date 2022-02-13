@@ -1,5 +1,9 @@
 #include <pic32mx.h>
+#include "data/macros.h"
+
+USE_IMAGE(test);
 
 int main() {
-	return 0;
+	bool test = IMAGE_BIT(test, 10, 10);
+	return test;
 }

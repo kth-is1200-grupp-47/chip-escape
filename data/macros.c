@@ -3,13 +3,15 @@
 #include <assert.h>
 #include "data/macros.h"
 
-bool image_bit(unsigned char* image, int x, int y) {
+bool _image_bit(unsigned char* image, int x, int y) {
 	/* IMAGE_DATA returns a pointer at position 2 */
 	unsigned char w = image[-2];
 	unsigned char h = image[-1];
 
-	/* Assert that we're not accessing pixels outside the image */
-	assert(x >= 0 && x < w && y >= 0 && y < h);
+	/* If we're accessing pixels outside the image return a black pixel */
+	if(x < 0 || x >= w || y < 0 || y >= h) {
+		return false;
+	}
 
 	/* Absolute bit position starts at position 0, the most-significant bit in the entire array */
 	int bit = (y * h) + x;
