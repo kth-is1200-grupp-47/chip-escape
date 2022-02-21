@@ -6,18 +6,22 @@
  */
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifndef MACROS_H
 #define MACROS_H
 
-#define USE_IMAGE(name) extern unsigned char _binary_data_images_ ## name ## _png_start[]
+/* Pointer to image data from builder.c */
+typedef const uint8_t* Image;
 
-#define IMAGE_WIDTH(name) (_binary_data_images_ ## name ## _png_start[0])
-#define IMAGE_HEIGHT(name) (_binary_data_images_ ## name ## _png_start[1])
-#define IMAGE_DATA(name) (&_binary_data_images_ ## name ## _png_start[2])
+#define USE_IMAGE(name) \
+	extern const uint8_t _binary_data_images_ ##name## _png_start[]; \
+	Image image_##name = _binary_data_images_ ##name## _png_start + 2;
 
-/* Access a pixel of an image. The image pointer should be retrieved with IMAGE_DATA(name). */
-#define IMAGE_BIT(name, x, y) _image_bit(IMAGE_DATA(name), x, y)
-bool _image_bit(unsigned char* image, int x, int y);
+static inline uint8_t width_of(Image image) { return image[-2]; }
+static inline uint8_t height_of(Image image) { return image[-1]; }
+
+/* Access a single pixel of an image. */
+bool image_bit(Image image, uint8_t x, uint8_t y);
 
 #endif

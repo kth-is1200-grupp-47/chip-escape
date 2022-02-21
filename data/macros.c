@@ -1,25 +1,18 @@
 /* Written by Hannes Mann */
 
 #include <assert.h>
+#include <stdint.h>
+
 #include "data/macros.h"
 
-bool _image_bit(unsigned char* image, int x, int y) {
-	/* IMAGE_DATA returns a pointer at position 2 */
-	unsigned char w = image[-2];
-	unsigned char h = image[-1];
-
-	/* If we're accessing pixels outside the image return a black pixel */
-	if(x < 0 || x >= w || y < 0 || y >= h) {
-		return false;
-	}
-
+bool image_bit(Image image, uint8_t x, uint8_t y) {
 	/* Absolute bit position starts at position 0, the most-significant bit in the entire array */
-	int bit = (y * h) + x;
+	int bit = (y * height_of(image)) + x;
 	int byte = bit / 8;
 
 	/* MSB = first */
-	unsigned char offset = 7 - bit % 8;
-	unsigned char bitmask = 1 << offset;
+	uint8_t offset = 7 - bit % 8;
+	uint8_t bitmask = 1 << offset;
 
 	return (image[byte] & bitmask) >> offset;
 }
