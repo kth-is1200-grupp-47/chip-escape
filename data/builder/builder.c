@@ -3,9 +3,9 @@
  *
  * Image format:
  * Byte 0-1 - Width, Height
- * Byte 2-x - Eight bits containing up to eight pixels (order: MSB -> LSB)
+ * Byte 2-x - Eight bits containing up to eight pixels (order: LSB -> MSB)
  *
- * TODO: Change image format if necessary to match better with the ChipKIT
+ * Bits are arranged as y rows with x columns in them. To locate a bit: (y * width + x) / 8
  *
  * Written by Hannes Mann
  */

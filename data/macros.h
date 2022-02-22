@@ -15,8 +15,8 @@
 typedef const uint8_t* Image;
 
 #define USE_IMAGE(name) \
-	extern const uint8_t _binary_data_images_ ##name## _png_start[]; \
-	Image image_##name = _binary_data_images_ ##name## _png_start + 2;
+	extern const uint8_t _binary_data_images_ ##name## _png_data_start[]; \
+	Image image_##name = _binary_data_images_ ##name## _png_data_start + 2;
 
 static inline uint8_t width_of(Image image) { return image[-2]; }
 static inline uint8_t height_of(Image image) { return image[-1]; }

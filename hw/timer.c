@@ -1,4 +1,4 @@
-#include<stdint.h>
+#include <stdint.h>
 #include <pic32mx.h>
 #include "hw/timer.h"
 
@@ -9,7 +9,7 @@
  * TMR2 = LSWord, TMR3 MSWord            *
  * Written by Botan Botani               *
  ****************************************/
-void timer_init(){
+void timer_init() {
 
     /* Clear timer 2 and 3 */
     T2CON = 0;

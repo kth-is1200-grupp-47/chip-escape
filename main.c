@@ -19,11 +19,17 @@ int main() {
 
 	int t = 0;
 	while(true) {
-		uint8_t bit_pos = DISPLAY_WIDTH - 1;
-		bit_pos *= (sin(t / 20.0) + 1.0) / 2.0;
-
 		display_clear(false);
-		display_write_bit(true, bit_pos, DISPLAY_HEIGHT / 2);
+
+		if(getBtns() & 1) {
+			uint8_t bit_pos = DISPLAY_WIDTH - 1;
+			bit_pos *= (sin(t / 20.0) + 1.0) / 2.0;
+			display_write_bit(true, bit_pos, DISPLAY_HEIGHT / 2);
+		}
+		else {
+			display_draw_image(image_test, 0, 0);
+		}
+
 		display_send_buffer();
 
 		/* Placeholder until timer is done */

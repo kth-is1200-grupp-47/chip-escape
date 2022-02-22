@@ -10,13 +10,9 @@ bool image_bit(Image image, int x, int y) {
 	x = x % width_of(image);
 	y = y % height_of(image);
 
-	/* Absolute bit position starts at position 0, the most-significant bit in the entire array */
-	int bit = (y * height_of(image)) + x;
-	int byte = bit / 8;
+	int bit = (y * width_of(image)) + x;
+	/* LSB = first */
+	uint8_t bitmask = 1 << (bit % 8);
 
-	/* MSB = first */
-	uint8_t offset = 7 - bit % 8;
-	uint8_t bitmask = 1 << offset;
-
-	return (image[byte] & bitmask) >> offset;
+	return image[bit / 8] & bitmask;
 }
