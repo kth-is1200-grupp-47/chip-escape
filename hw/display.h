@@ -29,14 +29,26 @@ static inline void display_clear(bool enable) {
 	memset(display_buffer, enable ? 0xff : 0, sizeof(display_buffer));
 }
 
-/* Write an image to the display buffer at the specified coordinates. */
-void display_draw_image(Image image, int x, int y);
-
-/* Write all enabled bits of an image to the display buffer at the specified coordinates. */
-void display_overlay_image(Image image, int x, int y);
-
 /* Write a single bit to the display buffer at the specified coordinates. */
 void display_write_bit(bool enable, int x, int y);
+
+/* Draw a rectangle at the specified coordinates. */
+void display_draw_rectangle(bool enable, int x, int y, int w, int h);
+
+/* Draw an image to the display buffer at the specified coordinates. */
+void display_draw_image(Image image, int x, int y);
+
+/* Write enabled bits of an image to the display buffer at the specified coordinates. */
+void display_overlay_image(Image image, int x, int y);
+
+/* Draw part of an image to the display buffer at the specified coordinates. */
+void display_draw_image_region(Image image, int x, int y, int rx, int ry, int rw, int rh);
+
+/* Write enabled bits of part of an image to the display buffer at the specified coordinates. */
+void display_overlay_image_region(Image image, int x, int y, int rx, int ry, int rw, int rh);
+
+/* Draw text at the specified coordinates. */
+void display_draw_text(const char* text, int x, int y);
 
 /* Update the display with the contents of display_buffer (without clearing the buffer). */
 void display_send_buffer();
