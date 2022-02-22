@@ -3,6 +3,19 @@
 #include"hw/inputs.h"
 
 
+/****************************************
+ * This function initializes the inputs *
+ * Written by Botan Botani              *
+ * *************************************/
+void input_init(){
+    /* Initialization of buttons 2-4 (bits 5-7 of port D) and switch 1-4 (bits 8-11 of port D) as input*/
+    TRISD |= 0xFE0;
+
+    /* Initialization of button 1 (bit 1 of port F) as input */
+    TRISF |= 0x2;
+}
+
+
 /***********************************************
 * This file handles various inputs to the game *
 ************************************************/

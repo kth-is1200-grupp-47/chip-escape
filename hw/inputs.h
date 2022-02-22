@@ -4,3 +4,5 @@
 int getSW();
 
 int getBtns();
+
+void input_init();
