@@ -20,7 +20,7 @@ void input_init(){
 * This file handles various inputs to the game *
 ************************************************/
 
-/**************************************************** 
+/****************************************************
 *  Input of switches is returned by this function   *
 *  in binary form.                                  *
 *  Written by Hannes Mann & Botan Botani            *
@@ -45,7 +45,7 @@ int getSW() {
 
 
 
-/**************************************************** 
+/****************************************************
 *  Input of buttons is returned by this function    *
 *  in binary form.                                  *
 *  Written by Hannes Mann & Botan Botani            *
@@ -54,7 +54,7 @@ int getBtns(){
     int btn_status = 0b0000;
 
     /* Status for button 1 (jump movement) */
-    btn_status |= (PORTF & (1 << 1)) >> 1
+    btn_status |= (PORTF & (1 << 1)) >> 1;
 
     /* Status for button 2 (right movement) */
     btn_status |= (PORTD & (1 << 5)) >> 4;

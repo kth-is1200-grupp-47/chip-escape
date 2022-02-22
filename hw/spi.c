@@ -1,7 +1,7 @@
 #include <pic32mx.h>
 #include "hw/spi.h"
 
-void spi_initialize() {
+void spi_init() {
 	/* Set PBCLK to 80 MHz. Recommended in Lab 3 and OLED display example. */
 	SYSKEY = 0xAA996655;
 	SYSKEY = 0x556699AA;

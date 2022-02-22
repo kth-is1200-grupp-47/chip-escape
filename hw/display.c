@@ -38,7 +38,7 @@ void set_data_mode() {
 	PORT_DATA_SET = BIT_SEND_DATA;
 }
 
-void display_initialize() {
+void display_init() {
 	/* Clear buffer to all black */
 	display_clear(false);
 
@@ -97,9 +97,9 @@ void display_overlay_image(Image image, uint8_t x, uint8_t y) {
 }
 
 void display_write_bit(bool enable, uint8_t x, uint8_t y) {
-	uint8_t page = y / 8;
+	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
 	uint16_t buffer_pos = page * DISPLAY_WIDTH + x;
-	uint8_t bit = y - (page * 8);
+	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
 
 	if(enable) {
 		display_buffer[buffer_pos] |= 1 << bit;
@@ -128,6 +128,4 @@ void display_send_buffer() {
 			spi2_send(*pending_data++);
 		}
 	}
-
-	display_clear(false);
 }
