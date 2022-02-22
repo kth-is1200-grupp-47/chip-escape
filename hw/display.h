@@ -30,13 +30,13 @@ static inline void display_clear(bool enable) {
 }
 
 /* Write an image to the display buffer at the specified coordinates. */
-void display_draw_image(Image image, uint8_t x, uint8_t y);
+void display_draw_image(Image image, int x, int y);
 
 /* Write all enabled bits of an image to the display buffer at the specified coordinates. */
-void display_overlay_image(Image image, uint8_t x, uint8_t y);
+void display_overlay_image(Image image, int x, int y);
 
 /* Write a single bit to the display buffer at the specified coordinates. */
-void display_write_bit(bool enable, uint8_t x, uint8_t y);
+void display_write_bit(bool enable, int x, int y);
 
 /* Update the display with the contents of display_buffer (without clearing the buffer). */
 void display_send_buffer();

@@ -22,6 +22,6 @@ static inline uint8_t width_of(Image image) { return image[-2]; }
 static inline uint8_t height_of(Image image) { return image[-1]; }
 
 /* Access a single pixel of an image. */
-bool image_bit(Image image, uint8_t x, uint8_t y);
+bool image_bit(Image image, int x, int y);
 
 #endif

@@ -77,10 +77,10 @@ void display_init() {
 	spi2_send(CMD_DISPLAY_ON);
 }
 
-void display_draw_image(Image image, uint8_t x, uint8_t y) {
+void display_draw_image(Image image, int x, int y) {
 	/* Clear all bits behind the image */
-	for(uint8_t xp = x; xp < x + width_of(image); xp++) {
-		for(uint8_t yp = y; yp < y + height_of(image); yp++) {
+	for(int yp = y; yp < y + height_of(image); yp++) {
+		for(int xp = x; xp < x + width_of(image); xp++) {
 			display_write_bit(false, xp, yp);
 		}
 	}
@@ -88,17 +88,26 @@ void display_draw_image(Image image, uint8_t x, uint8_t y) {
 	display_overlay_image(image, x, y);
 }
 
-void display_overlay_image(Image image, uint8_t x, uint8_t y) {
-	for(uint8_t xp = x; xp < x + width_of(image); xp++) {
-		for(uint8_t yp = y; yp < y + height_of(image); yp++) {
+void display_overlay_image(Image image, int x, int y) {
+	/*
+	 * Iterate through y in the outer loop for the best cache efficiency.
+	 * All writes will be done to the same page for eight pixels, so this makes use of spaital locality.
+	 */
+	for(int yp = y; yp < y + height_of(image); yp++) {
+		for(int xp = x; xp < x + width_of(image); xp++) {
 			display_write_bit(image_bit(image, xp - x, yp - y), xp, yp);
 		}
 	}
 }
 
-void display_write_bit(bool enable, uint8_t x, uint8_t y) {
+void display_write_bit(bool enable, int x, int y) {
+	/* Allow writes outside the display area, but do nothing. */
+	if(x < 0 || y < 0 || x >= DISPLAY_WIDTH || y >= DISPLAY_HEIGHT) {
+		return;
+	}
+
 	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
-	uint16_t buffer_pos = page * DISPLAY_WIDTH + x;
+	int buffer_pos = page * DISPLAY_WIDTH + x;
 	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
 
 	if(enable) {
