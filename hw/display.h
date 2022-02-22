@@ -18,6 +18,10 @@
 #define DISPLAY_PAGE_HEIGHT 8
 #define DISPLAY_HEIGHT (DISPLAY_PAGES * DISPLAY_PAGE_HEIGHT)
 
+/* Width and height of characters in the game font (spleen) */
+#define FONT_CHAR_WIDTH 5
+#define FONT_CHAR_HEIGHT 8
+
 /* 1-bit array with the same format as OLED display containing the next frame */
 extern uint8_t display_buffer[DISPLAY_WIDTH * DISPLAY_PAGES];
 
