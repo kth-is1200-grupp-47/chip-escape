@@ -9,5 +9,7 @@
 #define TIMER_H
 
 void timer_init();
+int timer_time();
+void timer_sleep();
 
 #endif
