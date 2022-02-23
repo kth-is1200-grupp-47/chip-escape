@@ -5,15 +5,22 @@
 
 #include "hw/display.h"
 #include "hw/inputs.h"
+#include "hw/interrupts.h"
 #include "hw/spi.h"
+#include "hw/timer.h"
 
 USE_IMAGE(test);
 
 int main() {
+	/* Initialize interrupts and timer. */
+	init_interrupt();
+	timer_init();
+
 	/* Initialize the Serial Peripheral Interface, for communicating with display. */
 	spi_init();
 	/* Initialize and clear OLED display. */
 	display_init();
+
 	/* Initialize input devices. */
 	input_init();
 
@@ -39,8 +46,7 @@ int main() {
 		display_draw_text("CHIP ESCAPE", 4, DISPLAY_HEIGHT - FONT_CHAR_HEIGHT);
 		display_send_buffer();
 
-		/* Placeholder until timer is done */
-		for(volatile int i = 0; i < 4711 * 20; i++) {}
+		timer_sleep(20);
 
 		t++;
 		if(t % 100 == 0) {
@@ -50,8 +56,4 @@ int main() {
 	}
 
 	return 0;
-}
-
-void user_isr() {
-	/* TODO: Interrupt handler */
 }

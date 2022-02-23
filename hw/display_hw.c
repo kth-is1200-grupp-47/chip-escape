@@ -5,9 +5,7 @@
 
 #include "hw/display.h"
 #include "hw/spi.h"
-
-/* 4711 iterations per ms, taken from lab work */
-#define do_and_wait(x, ms) x; for(volatile int _delay = 0; _delay < 4711 * ms; _delay++) {}
+#include "hw/timer.h"
 
 /* From: https://digilent.com/reference/chipkit_shield_basic_io_shield/refmanual */
 #define BIT_VDD_ENABLE (1 << 6)
@@ -50,12 +48,15 @@ void display_init() {
 	set_command_mode();
 
 	/* Apply power to VDD (display logic) and ensure display is off */
-	do_and_wait(PORT_DATA_CLR = BIT_VDD_ENABLE, 100);
+	PORT_DATA_CLR = BIT_VDD_ENABLE;
+	timer_sleep(100);
 	spi2_send(CMD_DISPLAY_OFF);
 
 	/* Reset display */
-	do_and_wait(PORT_RESET_CLR = BIT_RESET, 1);
-	do_and_wait(PORT_RESET_SET = BIT_RESET, 1);
+	PORT_RESET_CLR = BIT_RESET;
+	timer_sleep(1);
+	PORT_RESET_SET = BIT_RESET;
+	timer_sleep(1);
 
 	/* Send Charge Pump and Pre-Charge Period */
 	spi2_send(0x8D);
@@ -64,7 +65,8 @@ void display_init() {
 	spi2_send(0xF1);
 
 	/* Apply power to VBAT (the display itself) */
-	do_and_wait(PORT_DATA_CLR = BIT_VBAT_ENABLE, 100);
+	PORT_DATA_CLR = BIT_VBAT_ENABLE;
+	timer_sleep(100);
 
 	/* Invert the display, so the origin is at the upper left corner */
 	spi2_send(0xA1);

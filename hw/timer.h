@@ -10,6 +10,6 @@
 
 void timer_init();
 int timer_time();
-void timer_sleep();
+void timer_sleep(int x);
 
 #endif
