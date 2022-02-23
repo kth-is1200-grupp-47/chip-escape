@@ -12,10 +12,10 @@ PROGNAME	= chip-escape
 LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 
 # Compiler and linker flags
-# Optimization disabled due to delay loops being removed
-CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu11 -O0 -Wall -I"$(shell pwd)"
+# TODO: Check if optimizations cause any problems
+CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu99 -Ofast -Wall -I"$(shell pwd)"
 ASFLAGS		+= -msoft-float
-LDFLAGS		+= -T $(LINKSCRIPT) -lc -lm
+LDFLAGS		+= -T $(LINKSCRIPT) -lc -lm -s
 
 # Filenames
 BINDIR      = bin

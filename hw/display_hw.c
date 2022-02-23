@@ -7,7 +7,7 @@
 #include "hw/spi.h"
 
 /* 4711 iterations per ms, taken from lab work */
-#define do_and_wait(x, ms) x; for(int _delay = 0; _delay < 4711 * ms; _delay++) {}
+#define do_and_wait(x, ms) x; for(volatile int _delay = 0; _delay < 4711 * ms; _delay++) {}
 
 /* From: https://digilent.com/reference/chipkit_shield_basic_io_shield/refmanual */
 #define BIT_VDD_ENABLE (1 << 6)

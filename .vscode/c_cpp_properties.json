@@ -8,7 +8,7 @@
             ],
             "defines": [],
             "compilerPath": "/opt/mcb32tools/bin/mipsel-mcb32-elf-gcc",
-            "cStandard": "gnu11",
+            "cStandard": "gnu99",
             "intelliSenseMode": "linux-gcc-x64",
             "compilerArgs": [
                 "-ffreestanding",

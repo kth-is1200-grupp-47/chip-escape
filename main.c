@@ -40,7 +40,7 @@ int main() {
 		display_send_buffer();
 
 		/* Placeholder until timer is done */
-		for(int i = 0; i < 4711 * 20; i++) {}
+		for(volatile int i = 0; i < 4711 * 20; i++) {}
 
 		t++;
 		if(t % 100 == 0) {
