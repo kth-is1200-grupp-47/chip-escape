@@ -3,6 +3,9 @@
 #include "hw/timer.h"
 #include "hw/interrupts.h"
 
+/* Total milliseconds elasped by program */
+int milliseconds = 0;
+
 /*****************************************
  * This function initializes the timers. *
  * Timer 2 and 3 are combined to form a  *
@@ -52,10 +55,7 @@ void timer_init() {
  * Written by Botan Botani                        *
  *************************************************/
 int timer_time(){
-    /*
-    TODO: Create variable for milliseconds
     return milliseconds;
-    */
 }
 
 /******************************************
@@ -63,9 +63,11 @@ int timer_time(){
  * Written by Botan Botani                *
  *****************************************/
 
-void timer_sleep(int x){
-    int time_now = timer_time();
-    while(time_now < timer_time() + x){
+void timer_wait(int ms){
+    /* Current time */
+    temp_ms = milliseconds;
+
+    while((milliseconds - temp_ms) != ms){
         /* wait */
     }
 }

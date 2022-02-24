@@ -2,6 +2,8 @@
 #include <pic32mx.h>
 #include "hw/timer.h"
 
+
+
 /*******************************************************************
  * This file handles the various interrupts                        *
  ******************************************************************/
@@ -29,9 +31,9 @@ void init_interrupt(){
     IEC(0) = 0x1;
 
     /**********************************************************
-     * To-do: enable interrupts by executing 'ei' instruction *
+     * Enable interrupt. Instruction is in eiInstruction.S    *
      *********************************************************/
-    // enable_interrupt()
+    enable_interrupt()
 }
 
 /************************************************
@@ -41,10 +43,9 @@ void user_isr(){
     
     /* If interrupt came from timer 4 */
     if (IFS(0) & 0x1){
-        /* Add one millisecond */
-
-        /* TODO: create variable for elasped milliseconds
-        milliseconds++; */
+        
+        /* Increment milliseconds */
+        milliseconds++;
 
         /* Clear interrupt flag for timer 4 (bit 0) */
         IFSCLR(0) = 0x1;

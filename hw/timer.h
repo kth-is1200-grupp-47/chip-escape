@@ -10,6 +10,7 @@
 
 void timer_init();
 int timer_time();
-void timer_sleep(int x);
+void timer_wait(int x);
+extern int milliseconds;
 
 #endif
