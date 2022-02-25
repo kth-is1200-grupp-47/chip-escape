@@ -45,7 +45,7 @@ void timer_init() {
      * Bit 15 enables the timer         *
      * Bit 6-4 sets the prescaler(1:256)*
      ***********************************/
-    T2CONSET = 0x8070;
+    T4CONSET = 0x8070;
 
 }
 
