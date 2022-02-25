@@ -4,7 +4,7 @@
 #include "hw/interrupts.h"
 
 /* Total milliseconds elasped by program */
-int milliseconds = 0;
+volatile int milliseconds = 0;
 
 /*****************************************
  * This function initializes the timers. *
@@ -36,16 +36,16 @@ void timer_init() {
     TMR4 = 0;
 
     /**************************************
-     * TMR4 counts to 32000 which is 1 ms *
-     * (80 000 000 / 256) / 100 = 3125    *
+     * TMR4 counts to 1250 which is 1 ms *
+     * (80 000 000 / 64) / 1000 = 1250    *
      *************************************/
-    PR4 = 0xC35;
+    PR4 = 1250;
 
     /************************************
      * Bit 15 enables the timer         *
      * Bit 6-4 sets the prescaler(1:256)*
      ***********************************/
-    T4CONSET = 0x8070;
+    T4CONSET = 0x8060;
 
 }
 
@@ -65,9 +65,9 @@ int timer_time(){
 
 void timer_wait(int ms){
     /* Current time */
-    temp_ms = milliseconds;
+    volatile int temp_ms = milliseconds;
 
-    while((milliseconds - temp_ms) != ms){
+    while((milliseconds - temp_ms) < ms){
         /* wait */
     }
 }

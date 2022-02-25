@@ -4,55 +4,74 @@
 #include "data/macros.h"
 
 #include "hw/display.h"
+#include "hw/eeprom.h"
 #include "hw/inputs.h"
 #include "hw/interrupts.h"
 #include "hw/spi.h"
 #include "hw/timer.h"
 
+#include "game/state.h"
+
+/* The amount of time a frame must take to keep a consistent frame rate. */
+#define MIN_FRAME_TIME 16
+
 USE_IMAGE(test);
 
 int main() {
-	/* Initialize interrupts and timer. */
-	init_interrupt();
-	timer_init();
-
 	/* Initialize the Serial Peripheral Interface, for communicating with display. */
 	spi_init();
+	/* Init EEPROM I2C. */
+	init_i2c();
+
+	/* Initialize interrupts and timer. */
+	timer_init();
+	init_interrupt();
+
 	/* Initialize and clear OLED display. */
 	display_init();
 
 	/* Initialize input devices. */
 	input_init();
 
-	char text[1024];
-	memset(text, 0, 1024);
-	char* last_char = text;
+	/* The time at which the current frame started. */
+	int start_time = timer_time();
+	/* The time it took to process the last frame. */
+	int elapsed_time = 0;
+	/* The current frame number */
+	int frame = 0;
 
-	int t = 0;
 	while(true) {
 		display_clear(false);
 
-		uint8_t bit_pos = DISPLAY_WIDTH - 1;
-		bit_pos *= (sin(t / 20.0) + 1.0) / 2.0;
-		display_write_bit(true, bit_pos, DISPLAY_HEIGHT / 2);
+		switch(current_state) {
+			case STATE_MAIN_MENU:
+				main_menu_update(frame);
+				main_menu_draw();
+				break;
 
-		/* Test for draw_text */
-		if(getBtns() & 1) {
-			*last_char = (t % ('Z' - 'A')) + 'A';
-			last_char++;
+			/*case STATE_LEVEL:
+				level_update(frame);
+				level_draw();
+				break;*/
 		}
 
-		display_draw_text(text, 4, 0);
-		display_draw_text("CHIP ESCAPE", 4, DISPLAY_HEIGHT - FONT_CHAR_HEIGHT);
+		elapsed_time = timer_time() - start_time;
+
+		/* If this frame took less than 16 ms we need to sleep */
+		if(elapsed_time < MIN_FRAME_TIME) {
+			int time_left = MIN_FRAME_TIME - elapsed_time;
+
+			timer_wait(1); /* align to start of millisecond */
+			time_left--;
+
+			timer_wait(time_left);
+		}
+
+		/* We start the next frame by sending the buffer to the display */
+		start_time = timer_time();
+		frame++;
+
 		display_send_buffer();
-
-		timer_sleep(20);
-
-		t++;
-		if(t % 100 == 0) {
-			memset(text, 0, 1024);
-			last_char = text;
-		}
 	}
 
 	return 0;

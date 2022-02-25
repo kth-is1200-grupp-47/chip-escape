@@ -11,6 +11,6 @@
 void timer_init();
 int timer_time();
 void timer_wait(int x);
-extern int milliseconds;
+extern volatile int milliseconds;
 
 #endif

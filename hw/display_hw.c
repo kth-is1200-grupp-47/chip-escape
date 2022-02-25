@@ -49,14 +49,14 @@ void display_init() {
 
 	/* Apply power to VDD (display logic) and ensure display is off */
 	PORT_DATA_CLR = BIT_VDD_ENABLE;
-	timer_sleep(100);
+	timer_wait(100);
 	spi2_send(CMD_DISPLAY_OFF);
 
 	/* Reset display */
 	PORT_RESET_CLR = BIT_RESET;
-	timer_sleep(1);
+	timer_wait(1);
 	PORT_RESET_SET = BIT_RESET;
-	timer_sleep(1);
+	timer_wait(1);
 
 	/* Send Charge Pump and Pre-Charge Period */
 	spi2_send(0x8D);
@@ -66,7 +66,7 @@ void display_init() {
 
 	/* Apply power to VBAT (the display itself) */
 	PORT_DATA_CLR = BIT_VBAT_ENABLE;
-	timer_sleep(100);
+	timer_wait(100);
 
 	/* Invert the display, so the origin is at the upper left corner */
 	spi2_send(0xA1);

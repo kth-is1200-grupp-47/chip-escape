@@ -58,7 +58,7 @@ void transfer_i2c(uint8_t byte){
 
     /* Device address (7 bits) + Write command (0) */
     I2C1TRN = 10100000;
-    if((!(I2C1STAT & 0x8000)){
+    if((!(I2C1STAT & 0x8000))) {
         /* Send address high byte */
         I2C1TRN = 0x0;
 
@@ -104,7 +104,7 @@ uint8_t receive_i2c(uint8_t address){
 
     /* Device address (7 bits) + Write command (0) */
     I2C1TRN = 10100000;
-    if((!(I2C1STAT & 0x8000)){
+    if((!(I2C1STAT & 0x8000))) {
         /* Send address high byte */
         I2C1TRN = 0x0;
 
@@ -123,6 +123,8 @@ uint8_t receive_i2c(uint8_t address){
         /* Wait for the bus to be ready */
         ready_i2c();
     }
+
+	I2C1TRN = 10100001;
 
     uint8_t received = I2C1RCV;
 
