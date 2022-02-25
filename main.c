@@ -40,6 +40,9 @@ int main() {
 	/* The current frame number */
 	int frame = 0;
 
+	/* Start game at main menu */
+	switch_state(STATE_MAIN_MENU);
+
 	while(true) {
 		display_clear(false);
 

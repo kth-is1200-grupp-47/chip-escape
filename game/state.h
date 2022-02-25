@@ -25,4 +25,7 @@ void level_load(); /* TODO: choose level */
 void level_update(int framenum);
 void level_draw();
 
+/* Switch to a different state and run load function */
+void switch_state(int new_state);
+
 #endif
