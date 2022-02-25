@@ -15,8 +15,6 @@
 /* The amount of time a frame must take to keep a consistent frame rate. */
 #define MIN_FRAME_TIME 16
 
-USE_IMAGE(test);
-
 int main() {
 	/* Initialize the Serial Peripheral Interface, for communicating with display. */
 	spi_init();
