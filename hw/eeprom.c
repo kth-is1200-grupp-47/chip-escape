@@ -56,27 +56,32 @@ void transfer_i2c(uint8_t byte){
     /* Wait for the bus to be ready */
     ready_i2c();
 
-    /* Device address (7 bits) + Write command (0) */
-    I2C1TRN = 10100000;
-    if((!(I2C1STAT & 0x8000))) {
-        /* Send address high byte */
-        I2C1TRN = 0x0;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
-
-        /* Send address low byte */
-        I2C1TRN = 0x0;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
-
-        /* Store the byte in the i2CxTRN register */
-        I2C1TRN = byte;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
+    /******************************************************** 
+     * Transfer device address (7 bits) + Write command (0) * 
+     * Wait for acknowledge.                                *
+    *********************************************************/
+    while(!(I2C1STAT & 0x8000)){
+        I2C1TRN = 10100000;
     }
+    
+     /* Send address high byte */
+    I2C1TRN = 0x0;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /* Send address low byte */
+    I2C1TRN = 0x0;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /* Store the byte in the i2CxTRN register */
+    I2C1TRN = byte;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+    
 
     /* Stop the bus */
     I2C1CONSET = 0x4;
@@ -102,30 +107,49 @@ uint8_t receive_i2c(uint8_t address){
     /* Wait for the bus to be ready */
     ready_i2c();
 
-    /* Device address (7 bits) + Write command (0) */
-    I2C1TRN = 10100000;
-    if((!(I2C1STAT & 0x8000))) {
-        /* Send address high byte */
-        I2C1TRN = 0x0;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
-
-        /* Send address low byte */
-        I2C1TRN = 0x0;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
-
-        /* Send start condition (bit 0) and receive enable (bit 3) */
-        I2C1CONSET = 0x9;
-
-        /* Wait for the bus to be ready */
-        ready_i2c();
+    /******************************************************** 
+     * Transfer device address (7 bits) + Write command (0) * 
+     * Wait for acknowledge.                                *
+    *********************************************************/
+    while(!(I2C1STAT & 0x8000)){
+        I2C1TRN = 10100000;
     }
 
-	I2C1TRN = 10100001;
+    /* Wait for the bus to be ready */
+    ready_i2c();
 
+    /* Send address high byte */
+    I2C1TRN = 0x0;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /* Send address low byte */
+    I2C1TRN = 0x0;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /* Send start condition (bit 0) and receive enable (bit 3) */
+    I2C1CONSET = 0x9;
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /******************************************************** 
+     * Transfer device address (7 bits) + Read command (1)  * 
+     * Wait for acknowledge.                                *
+    *********************************************************/
+    while(!(I2C1STAT & 0x8000)){
+        I2C1TRN = 10100001;
+    }
+
+    /* Wait for the bus to be ready */
+    ready_i2c();
+
+    /* Clear overflow bit (bit 6) */
+    I2C1STATCLR = 0x40;
+    
     uint8_t received = I2C1RCV;
 
     /* Stop the bus */
