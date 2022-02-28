@@ -22,6 +22,16 @@ static inline uint8_t width_of(Image image) { return image[-2]; }
 static inline uint8_t height_of(Image image) { return image[-1]; }
 
 /* Access a single pixel of an image. */
-bool image_bit(Image image, int x, int y);
+static bool image_bit(Image image, int x, int y) {
+	/* Wrap around if coordinates are outside the image. */
+	x = x % width_of(image);
+	y = y % height_of(image);
+
+	int bit = (y * width_of(image)) + x;
+	/* LSB = first */
+	uint8_t bitmask = 1 << (bit % 8);
+
+	return image[bit >> 3 /* bitwise for speed */] & bitmask;
+}
 
 #endif

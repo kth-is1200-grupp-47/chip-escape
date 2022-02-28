@@ -80,23 +80,6 @@ void display_init() {
 	spi2_send(CMD_DISPLAY_ON);
 }
 
-void display_write_bit(bool enable, int x, int y) {
-	/* Allow writes outside the display area, but do nothing. */
-	if(x < 0 || y < 0 || x >= DISPLAY_WIDTH || y >= DISPLAY_HEIGHT) {
-		return;
-	}
-
-	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
-	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
-
-	if(enable) {
-		display_buffer[page * DISPLAY_WIDTH + x] |= 1 << bit;
-	}
-	else {
-		display_buffer[page * DISPLAY_WIDTH + x] &= ~(1 << bit);
-	}
-}
-
 void display_send_buffer() {
 	uint8_t* pending_data = display_buffer;
 

@@ -1,8 +1,8 @@
 #include "state.h"
 
-int current_state;
+GameState current_state;
 
-void switch_state(int new_state) {
+void switch_state(GameState new_state) {
 	current_state = new_state;
 
 	/* Run load function */

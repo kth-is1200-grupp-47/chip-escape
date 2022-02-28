@@ -1,6 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <stdint.h>
+
 /* Player is in the main menu */
 #define STATE_MAIN_MENU 0
 /* Player is in a level */
@@ -8,8 +10,10 @@
 /* Player is at the highscore list */
 #define STATE_HIGHSCORE_LIST 2
 
+typedef uint8_t GameState;
+
 /* The current state of the game */
-extern int current_state;
+extern GameState current_state;
 
 /*
  * "load()" runs the first time the game switches to a new state
@@ -26,6 +30,6 @@ void level_update(int framenum);
 void level_draw();
 
 /* Switch to a different state and run load function */
-void switch_state(int new_state);
+void switch_state(GameState new_state);
 
 #endif

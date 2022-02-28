@@ -22,6 +22,16 @@
 #define FONT_CHAR_WIDTH 5
 #define FONT_CHAR_HEIGHT 8
 
+/* Write enabled bits only as white pixels */
+#define OP_OVERLAY 1
+/* Write enabled bits only as black pixels */
+#define OP_DISABLE 2
+/* XOR with display buffer */
+#define OP_INVERT 3
+
+/* Type of display operation */
+typedef uint8_t DisplayOp;
+
 /* 1-bit array with the same format as OLED display containing the next frame */
 extern uint8_t display_buffer[DISPLAY_WIDTH * DISPLAY_PAGES];
 
@@ -29,32 +39,49 @@ extern uint8_t display_buffer[DISPLAY_WIDTH * DISPLAY_PAGES];
 void display_init();
 
 /* Clear all bits of the display */
-static inline void display_clear(bool enable) {
+static void display_clear(bool enable) {
 	memset(display_buffer, enable ? 0xff : 0, sizeof(display_buffer));
 }
 
-/* Write a single bit to the display buffer at the specified coordinates. */
-void display_write_bit(bool enable, int x, int y);
-
-/* Draw a rectangle at the specified coordinates. */
-void display_draw_rectangle(bool enable, int x, int y, int w, int h);
-
-/* Draw an image to the display buffer at the specified coordinates. */
-void display_draw_image(Image image, int x, int y);
-
-/* Write enabled bits of an image to the display buffer at the specified coordinates. */
-void display_overlay_image(Image image, int x, int y);
-
-/* Draw part of an image to the display buffer at the specified coordinates. */
-void display_draw_image_region(Image image, int x, int y, int rx, int ry, int rw, int rh);
-
-/* Write enabled bits of part of an image to the display buffer at the specified coordinates. */
-void display_overlay_image_region(Image image, int x, int y, int rx, int ry, int rw, int rh);
-
-/* Draw text at the specified coordinates. */
-void display_draw_text(const char* text, int x, int y);
-
 /* Update the display with the contents of display_buffer (without clearing the buffer). */
 void display_send_buffer();
+
+/* Get bit in the display buffer at the specified coordinates. */
+static bool display_get_bit(uint16_t x, uint16_t y) {
+	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
+	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
+
+	return display_buffer[page * DISPLAY_WIDTH + x] & (1 << bit);
+}
+
+/* Write a single bit to the display buffer at the specified coordinates. */
+static void display_write_bit(bool enable, uint16_t x, uint16_t y) {
+	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
+	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
+
+	/* Allow writes outside the display area but do nothing (bitwise check for speed). */
+	if(x & DISPLAY_WIDTH || y & DISPLAY_HEIGHT) {
+		return;
+	}
+
+	if(enable) {
+		display_buffer[page * DISPLAY_WIDTH + x] |= 1 << bit;
+	}
+	else {
+		display_buffer[page * DISPLAY_WIDTH + x] &= ~(1 << bit);
+	}
+}
+
+/* Draw a rectangle on the display buffer at the specified coordinates. */
+void display_draw_rectangle(bool enable, int x, int y, uint8_t w, uint8_t h);
+
+/* Draw an image on the display buffer at the specified coordinates. */
+void display_draw_image(Image image, int x, int y, DisplayOp effect /* 0 or OP_X */);
+
+/* Draw part of an image on the display buffer at the specified coordinates. */
+void display_draw_image_region(Image image, int x, int y, uint8_t rx, uint8_t ry, uint8_t rw, uint8_t rh, DisplayOp effect /* 0 or OP_X */);
+
+/* Draw text on the display buffer at the specified coordinates. */
+void display_draw_text(const char* text, int x, int y, DisplayOp effect /* 0 or OP_DISABLE||OP_INVERT */);
 
 #endif
