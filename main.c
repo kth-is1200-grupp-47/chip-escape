@@ -1,6 +1,7 @@
 #include <pic32mx.h>
 #include <math.h>
 
+#include "debug.h"
 #include "data/macros.h"
 
 #include "hw/display.h"
@@ -31,6 +32,9 @@ int main() {
 	/* Initialize input devices. */
 	input_init();
 
+	/* All devices initialized so visual crashes can be enabled. */
+	debug_enable_visual_crashes();
+
 	/* The time at which the current frame started. */
 	int start_time = timer_time();
 	/* The time it took to process the last frame. */
@@ -56,22 +60,22 @@ int main() {
 				break;*/
 		}
 
-		elapsed_time = timer_time() - start_time;
+		/* Debugging functions */
+		debug_on_frame(elapsed_time);
+		debug_draw_overlay();
 
-		/* If this frame took less than 16 ms we need to sleep */
-		if(elapsed_time < MIN_FRAME_TIME) {
-			int time_left = MIN_FRAME_TIME - elapsed_time;
-
-			timer_wait(1); /* align to start of millisecond */
-			time_left--;
-
-			timer_wait(time_left);
+		if(timer_time() - start_time < MIN_FRAME_TIME) {
+			timer_wait(1); /* align to millisecond */
 		}
 
-		/* We start the next frame by sending the buffer to the display */
+		elapsed_time = timer_time() - start_time;
+		/* If this frame took less than 16 ms we need to sleep */
+		timer_wait(MIN_FRAME_TIME - elapsed_time);
+
 		start_time = timer_time();
 		frame++;
 
+		/* We start the next frame by sending the buffer to the display */
 		display_send_buffer();
 	}
 
