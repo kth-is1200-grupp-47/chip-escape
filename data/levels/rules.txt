@@ -1,0 +1,11 @@
+To create a level, create a PNG with a transparent background.
+The level size will be 8 times bigger than the image (because a tile is 8x8 pixels).
+
+Tiles              R   G   B
+-----------------------------
+Ground            255 255 255
+
+Player            255 000 000
+
+Platform          000 255 000 (2 tiles = small platform, 3 tiles = big platform)
+Falling Platform  000 128 000 (2 tiles = small platform, 3 tiles = big platform)

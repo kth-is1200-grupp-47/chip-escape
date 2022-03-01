@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 #define STBI_ONLY_PNG
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
 /* Temporary output file name */
@@ -22,13 +21,13 @@ void build_image_object(const char* input, const char* output) {
 	uint8_t* input_bytes = stbi_load(input, &w, &h, &n, 4);
 
 	if(!input_bytes) {
-		printf("%s: stb error %s\n", stbi_failure_reason());
+		printf("builder_image: stb error %s\n", stbi_failure_reason());
 		exit(1);
 	}
 
 	/* TODO: Bigger images needed in the game? */
 	if(w > 255 || h > 255) {
-		printf("%s: Image is too big! Width: %d, Height: %d\n", input, w, h);
+		printf("builder_image: Image is too big! Width: %d, Height: %d\n", w, h);
 		exit(1);
 	}
 
@@ -66,7 +65,7 @@ void build_image_object(const char* input, const char* output) {
 				output_bytes[current_byte] |= 1 << current_bit;
 			}
 			else if(red || green || blue) {
-				printf("%s: Only white and black pixels are allowed in PNG files.\n", input);
+				printf("builder_image: Only white and black pixels are allowed in PNG files.\n");
 				exit(1);
 			}
 
@@ -76,6 +75,7 @@ void build_image_object(const char* input, const char* output) {
 			}
 		}
 	}
+
 	char* tmp_output_name = malloc(strlen(TMP_OUTPUT_FORMAT) + strlen(input) + 1);
 	sprintf(tmp_output_name, TMP_OUTPUT_FORMAT, input);
 

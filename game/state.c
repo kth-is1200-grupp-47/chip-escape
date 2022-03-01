@@ -2,7 +2,7 @@
 
 GameState current_state;
 
-void switch_state(GameState new_state) {
+void switch_state(GameState new_state, const void* load_data) {
 	current_state = new_state;
 
 	/* Run load function */
@@ -11,8 +11,8 @@ void switch_state(GameState new_state) {
 			main_menu_load();
 			break;
 
-		/*case STATE_LEVEL:
-			level_load();
-			break;*/
+		case STATE_LEVEL:
+			level_load((Level)load_data);
+			break;
 	}
 }

@@ -24,12 +24,12 @@ HEXFILE		= $(BINDIR)/$(PROGNAME).hex
 
 # Find all source files automatically
 # Modified by Hannes Mann to include subdirectories
-CFILES_ALL  = $(wildcard *.c) $(wildcard */*.c)
+CFILES_ALL  = $(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c)
 
 # Exclude files from builder directory which are built by a separate makefile
 CFILES      = $(filter-out data/builder/%.c,$(CFILES_ALL))
-ASFILES     = $(wildcard *.S) $(wildcard */*.S)
-SYMSFILES   = $(wildcard *.syms) $(wildcard */*.syms)
+ASFILES     = $(wildcard *.S) $(wildcard */*.S) $(wildcard */*/*.S)
+SYMSFILES   = $(wildcard *.syms) $(wildcard */*.syms) $(wildcard */*/*.syms)
 
 # Object file names
 OBJFILES    = $(CFILES:.c=.c.o)

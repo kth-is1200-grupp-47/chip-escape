@@ -1,7 +1,13 @@
+/*
+ * The "game state" indicates what the game is doing (in a menu? in a level? etc.)
+ * Written by Hannes Mann
+ */
+
 #ifndef STATE_H
 #define STATE_H
 
 #include <stdint.h>
+#include "data/macros.h"
 
 /* Player is in the main menu */
 #define STATE_MAIN_MENU 0
@@ -25,11 +31,11 @@ void main_menu_load();
 void main_menu_update(int framenum);
 void main_menu_draw();
 
-void level_load(); /* TODO: choose level */
+void level_load(Level data);
 void level_update(int framenum);
 void level_draw();
 
 /* Switch to a different state and run load function */
-void switch_state(GameState new_state);
+void switch_state(GameState new_state, const void* load_data);
 
 #endif

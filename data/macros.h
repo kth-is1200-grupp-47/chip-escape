@@ -34,4 +34,14 @@ static bool image_bit(Image image, int x, int y) {
 	return image[bit >> 3 /* bitwise for speed */] & bitmask;
 }
 
+/* Pointer to level data from builder.c */
+typedef const uint8_t* Level;
+
+#define USE_LEVEL(name) \
+	extern const uint8_t _binary_data_levels_ ##name## _png_data_start[]; \
+	Level level_##name = _binary_data_levels_ ##name## _png_data_start + sizeof(uint16_t) * 2;
+
+static inline uint16_t level_width(Level level) { return (level[-4] << 8) | level[-3]; }
+static inline uint16_t level_height(Level level) { return (level[-2] << 8) | level[-1]; }
+
 #endif

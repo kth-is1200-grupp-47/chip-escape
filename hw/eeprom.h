@@ -1,6 +1,6 @@
 /*
  * This file contains functions for interacting with the ChipKIT EEPROM.
- * Written by ...
+ * Written by Botan Botani
  */
 
 #include <pic32mx.h>
