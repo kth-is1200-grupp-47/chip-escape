@@ -38,10 +38,10 @@ void level_load(Level data) {
 }
 
 void level_update(int framenum) {
-	entity_update_all(current_level, entities);
+	entity_update_all(entities);
 	camera_update(framenum);
 }
 
 void level_draw() {
-	entity_draw_all(current_level, entities);
+	entity_draw_all(entities);
 }

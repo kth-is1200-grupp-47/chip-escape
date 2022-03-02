@@ -42,8 +42,18 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 
 /* Update all entities in array */
-void entity_update_all(Level level, Entity* array_start);
+void entity_update_all(Entity* array_start);
 /* Draw all entities in array */
-void entity_draw_all(Level level, Entity* array_start);
+void entity_draw_all(Entity* array_start);
+
+/* Update ENTITY_TYPE_PLAYER */
+void entity_player_update(Entity* self);
+/* Draw ENTITY_TYPE_PLAYER */
+void entity_player_draw(Entity* self);
+
+/* Update ENTITY_TYPE_PLATFORM */
+void entity_platform_update(Entity* self);
+/* Draw ENTITY_TYPE_PLATFORM */
+void entity_platform_draw(Entity* self);
 
 #endif

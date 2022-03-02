@@ -41,7 +41,7 @@ typedef const uint8_t* Level;
 	extern const uint8_t _binary_data_levels_ ##name## _png_data_start[]; \
 	static Level level_##name = _binary_data_levels_ ##name## _png_data_start + sizeof(uint16_t) * 2;
 
-static inline uint16_t level_width(Level level) { return (level[-4] << 8) | level[-3]; }
-static inline uint16_t level_height(Level level) { return (level[-2] << 8) | level[-1]; }
+static inline uint16_t level_width(Level level) { return level[-4] | (level[-3] << 8); }
+static inline uint16_t level_height(Level level) { return level[-2] | (level[-1] << 8); }
 
 #endif

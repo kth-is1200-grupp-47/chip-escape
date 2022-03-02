@@ -1,4 +1,5 @@
 #include "game/entity.h"
+#include "debug.h"
 #include <assert.h>
 
 #define check_spawn_entity(etile, etype, function) \
@@ -27,20 +28,33 @@ void entity_load_from_level_tiles(Level level, Entity* array_start) {
 	}
 }
 
-void entity_update_all(Level level, Entity* array_start) {
+#define update_entity(etype, function) \
+	case etype: \
+		function(current_entity); \
+		break
+
+void entity_update_all(Entity* array_start) {
 	Entity* current_entity = array_start;
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
-		/* ... */
+		switch(current_entity->type) {
+			update_entity(ENTITY_TYPE_PLAYER, entity_player_update);
+			update_entity(ENTITY_TYPE_PLATFORM, entity_platform_update);
+		}
+
 		current_entity++;
 	}
 }
 
-void entity_draw_all(Level level, Entity* array_start) {
+void entity_draw_all(Entity* array_start) {
 	Entity* current_entity = array_start;
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
-		/* ... */
+		switch(current_entity->type) {
+			update_entity(ENTITY_TYPE_PLAYER, entity_player_draw);
+			update_entity(ENTITY_TYPE_PLATFORM, entity_platform_draw);
+		}
+
 		current_entity++;
 	}
 }

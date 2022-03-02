@@ -101,6 +101,10 @@ void build_level_object(const char* input, const char* output) {
 		exit(1);
 	}
 
+	if(w < 128 / 8 || h < 32 / 8) {
+		printf("builder_image: Level is too small! Width: %d, Height: %d\n", w, h);
+		exit(1);
+	}
 	if(w > UINT16_MAX || h > UINT16_MAX) {
 		printf("builder_image: Level is too big! Width: %d, Height: %d\n", w, h);
 		exit(1);

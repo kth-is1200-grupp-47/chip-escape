@@ -20,7 +20,7 @@ typedef uint8_t LevelTile;
 /* Upper bits: Size */
 #define TILE_ID_PLATFORM 2
 /* Indicates that player should spawn at this position */
-#define TILE_ID_PLAYER 16
+#define TILE_ID_PLAYER 15
 
 /* Bit indicating size of platform */
 #define TILE_PLATFORM_BIT_SMALL 1

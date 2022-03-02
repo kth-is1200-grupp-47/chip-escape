@@ -13,3 +13,11 @@ void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledat
 		*data_as_integer |= 1 << 1;
 	}
 }
+
+void entity_platform_update(Entity* self) {
+
+}
+
+void entity_platform_draw(Entity* self) {
+
+}
