@@ -20,6 +20,8 @@ typedef uint8_t GameState;
 
 /* The current state of the game */
 extern GameState current_state;
+/* The previous state of the game */
+extern GameState previous_state;
 
 /*
  * "load()" runs the first time the game switches to a new state

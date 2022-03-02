@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <stdint.h>
 
 /* Level we're playing right now */
 Level current_level;
@@ -46,11 +47,21 @@ void level_update(int framenum) {
 
 USE_IMAGE(tile_ground);
 
+/* Draw tiles at specified position */
 void draw_tile(LevelTile tile, int x, int y) {
 	switch(level_extract_tile_id(tile)) {
-		case TILE_ID_GROUND:
-			display_draw_image_region(image_tile_ground, x, y, 8, 0, 8, 8, 0); /* TODO offset */
+		case TILE_ID_GROUND: {
+			/* Offset calculated by builder_image */
+			uint8_t offset = level_extract_tile_data(tile);
+			uint8_t offset_x = offset & 0b11;
+			uint8_t offset_y = (offset & 0b1100) >> 2;
+
+			/* Draw nothing if offset = 3 3 */
+			if(offset_x != 3 || offset_y != 3) {
+				display_draw_image_region(image_tile_ground, x, y, offset_x * TILE_SIZE, offset_y * TILE_SIZE, 8, 8, 0);
+			}
 			break;
+		}
 	}
 }
 

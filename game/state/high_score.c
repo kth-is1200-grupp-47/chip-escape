@@ -1,6 +1,9 @@
 #include <stdbool.h>
+#include<stdio.h>
 
 #include "game/state.h"
+
+#include "hw/display.h"
 #include "hw/inputs.h"
 
 /* Array for initials and scores */
@@ -31,7 +34,7 @@ void high_score_load(const int* data){
 
     /* data begins with a 0 element */
     for(int i = 1; i < 17; i++){
-        
+
         /* Every fourth character is a score */
         if(i%4 == 0){
             scores[count_scores] = data[i];
@@ -54,7 +57,25 @@ void high_score_update(int framenum) {
 	}
 }
 
+/****************************************************
+ * This function draws the high score on the screen *
+ ****************************************************/
 void high_score_draw() {
+
+    /* Checking previous state */
+    switch(previous_state){
+
+        case STATE_MAIN_MENU:
+
+
+
+            for(int i = 1; i < 13; i++){
+
+            }
+    }
+
+
+
 }
 
 /* Returns true if the score acquired is a high score */

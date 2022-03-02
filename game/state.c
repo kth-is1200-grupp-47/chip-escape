@@ -1,8 +1,10 @@
 #include "state.h"
 
-GameState current_state;
+GameState current_state = 0;
+GameState previous_state = 0;
 
 void switch_state(GameState new_state, const void* load_data) {
+	previous_state = current_state;
 	current_state = new_state;
 
 	/* Run load function */

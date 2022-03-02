@@ -25,7 +25,7 @@ void camera_update(int framenum) {
 		camera_offset_x = 0;
 	}
 	if(camera_offset_x > level_width(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1) {
-		camera_offset_x =  level_width(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1;
+		camera_offset_x = level_width(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1;
 	}
 
 	if(camera_offset_y < 0) {

@@ -39,8 +39,65 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 		switch(color) {
 			/* Ground */
 			case 0xffffffff:
-				/* TODO: calculate offset to use */
 				*output = TILE_ID_GROUND;
+
+				int offset_x = 1;
+				int offset_y = 0;
+
+				bool empty_left = get_image_color_at(input, x - 1, y, iw, ih) != color;
+				bool empty_right = get_image_color_at(input, x + 1, y, iw, ih) != color;
+				bool empty_top = get_image_color_at(input, x, y - 1, iw, ih) != color;
+				bool empty_bottom = get_image_color_at(input, x, y + 1, iw, ih) != color;
+
+				/* No ground tile to the left? */
+				if(empty_left && x > 0) {
+					offset_x = 0;
+				}
+				/* No ground tile to the right? */
+				if(empty_right && x < iw - 1) {
+					/* If previous statement is also true */
+					if(offset_x == 0) {
+						offset_x = 1;
+						offset_y = 1;
+					}
+					else {
+						offset_x = 2;
+					}
+				}
+
+				/* Tile above us? */
+				if(!empty_top && y > 0) {
+					offset_y++;
+
+					if(!empty_left && !empty_right) {
+						offset_x = 3; /* draw nothing */
+						offset_y = 3;
+					}
+					if(x == 0 || x == iw - 1) {
+						offset_x = 3; /* draw nothing */
+						offset_y = 3;
+					}
+				}
+
+				/* Tile below us? */
+				if(empty_bottom && y < ih - 1) {
+					offset_x = 3;
+
+					if(empty_left) {
+						offset_y = 0;
+					}
+					else if(empty_right) {
+						offset_y = 1;
+					}
+					else {
+						offset_y = 2;
+					}
+				}
+
+				/* TODO: slope */
+
+				*output |= offset_x << 4;
+				*output |= offset_y << 6;
 				break;
 
 			/* Player */
