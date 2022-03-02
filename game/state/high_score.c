@@ -1,3 +1,8 @@
+#include <stdbool.h>
+
+#include "game/state.h"
+#include "hw/inputs.h"
+
 /* Array for initials and scores */
 char initials[15];
 int scores[5];
@@ -14,8 +19,7 @@ char hex2char(int hex){
  * It takes the data read from the EEPROM: three initials and a score  *
  * and puts them in an array.                                          *
  ***********************************************************************/
-
-void high_score_init(int data){
+void high_score_load(const int* data){
 
     /* copy data to an array so that we can save them for later */
     for(int i = 0; i < 21; i++){
@@ -27,11 +31,10 @@ void high_score_init(int data){
 
     /* data begins with a 0 element */
     for(int i = 1; i < 21; i++){
-        
         /* Every fourth character is a score */
         if(i%4 == 0){
             scores[count_scores] = data[i];
-            count_scores++;   
+            count_scores++;
         }
 
         /* Else it's an initial */
@@ -40,6 +43,17 @@ void high_score_init(int data){
             count_initials++;
         }
     }
+}
+
+void high_score_update(int framenum) {
+	int pushed_buttons = getBtns();
+
+	if(pushed_buttons & 0b1000){
+		switch_state(STATE_MAIN_MENU, 0);
+	}
+}
+
+void high_score_draw() {
 }
 
 /* Returns true if the score acquired is a high score */
@@ -64,7 +78,7 @@ void high_score_put_n_save(int data[]){
             for(int j = 0; j <= 3; j--){
                 data_array[i-j] = data[3-j];
             }
-            
+
         }
     }
 

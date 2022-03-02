@@ -16,7 +16,7 @@ typedef const uint8_t* Image;
 
 #define USE_IMAGE(name) \
 	extern const uint8_t _binary_data_images_ ##name## _png_data_start[]; \
-	Image image_##name = _binary_data_images_ ##name## _png_data_start + 2;
+	static Image image_##name = _binary_data_images_ ##name## _png_data_start + 2;
 
 static inline uint8_t width_of(Image image) { return image[-2]; }
 static inline uint8_t height_of(Image image) { return image[-1]; }
@@ -39,7 +39,7 @@ typedef const uint8_t* Level;
 
 #define USE_LEVEL(name) \
 	extern const uint8_t _binary_data_levels_ ##name## _png_data_start[]; \
-	Level level_##name = _binary_data_levels_ ##name## _png_data_start + sizeof(uint16_t) * 2;
+	static Level level_##name = _binary_data_levels_ ##name## _png_data_start + sizeof(uint16_t) * 2;
 
 static inline uint16_t level_width(Level level) { return (level[-4] << 8) | level[-3]; }
 static inline uint16_t level_height(Level level) { return (level[-2] << 8) | level[-1]; }

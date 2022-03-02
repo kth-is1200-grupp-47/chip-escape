@@ -13,8 +13,6 @@
 
 #include "game/state.h"
 
-USE_LEVEL(test);
-
 /* The amount of time a frame must take to keep a consistent frame rate. */
 #define MIN_FRAME_TIME 16
 
@@ -45,7 +43,7 @@ int main() {
 	int frame = 0;
 
 	/* Start game at test level */
-	switch_state(STATE_LEVEL, level_test);
+	switch_state(STATE_MAIN_MENU, 0);
 
 	while(true) {
 		display_clear(false);
@@ -59,6 +57,11 @@ int main() {
 			case STATE_LEVEL:
 				level_update(frame);
 				level_draw();
+				break;
+
+			case STATE_HIGHSCORE_LIST:
+				high_score_update(frame);
+				high_score_draw();
 				break;
 		}
 

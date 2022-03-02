@@ -35,6 +35,10 @@ void level_load(Level data);
 void level_update(int framenum);
 void level_draw();
 
+void high_score_load(const int* data);
+void high_score_update(int framenum);
+void high_score_draw();
+
 /* Switch to a different state and run load function */
 void switch_state(GameState new_state, const void* load_data);
 

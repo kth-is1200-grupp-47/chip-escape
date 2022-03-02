@@ -14,5 +14,9 @@ void switch_state(GameState new_state, const void* load_data) {
 		case STATE_LEVEL:
 			level_load((Level)load_data);
 			break;
+
+		case STATE_HIGHSCORE_LIST:
+			high_score_load((const int*)load_data);
+			break;
 	}
 }

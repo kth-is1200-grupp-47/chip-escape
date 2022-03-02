@@ -39,6 +39,7 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 		switch(color) {
 			/* Ground */
 			case 0xffffffff:
+				/* TODO: calculate offset to use */
 				*output = TILE_ID_GROUND;
 				break;
 
