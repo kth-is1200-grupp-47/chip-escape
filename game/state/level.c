@@ -46,6 +46,7 @@ void level_update(int framenum) {
 }
 
 USE_IMAGE(tile_ground);
+USE_IMAGE(tile_hazard);
 
 /* Draw tiles at specified position */
 void draw_tile(LevelTile tile, int x, int y) {
@@ -60,6 +61,16 @@ void draw_tile(LevelTile tile, int x, int y) {
 			if(offset_x != 3 || offset_y != 3) {
 				display_draw_image_region(image_tile_ground, x, y, offset_x * TILE_SIZE, offset_y * TILE_SIZE, 8, 8, 0);
 			}
+			break;
+		}
+
+		case TILE_ID_HAZARD: {
+			/* Offset calculated by builder_image */
+			uint8_t offset = level_extract_tile_data(tile);
+			uint8_t offset_x = offset & 0b11;
+			uint8_t offset_y = (offset & 0b1100) >> 2;
+
+			display_draw_image_region(image_tile_hazard, x, y, offset_x * TILE_SIZE, offset_y * TILE_SIZE, 8, 8, 0);
 			break;
 		}
 	}

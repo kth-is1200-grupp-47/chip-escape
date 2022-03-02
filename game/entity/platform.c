@@ -33,9 +33,9 @@ void entity_platform_draw(Entity* self) {
 	uint32_t* data_as_int = (uint32_t*)(self->data);
 
 	if(*data_as_int & TILE_PLATFORM_BIT_BIG) {
-		display_draw_image_region(image_tile_platform, self->x - camera_offset_x, self->y- camera_offset_y, 0, PLATFORM_HEIGHT, PLATFORM_BIG_WIDTH, PLATFORM_HEIGHT, 0);
+		display_draw_image_region(image_tile_platform, self->x - camera_offset_x, self->y - camera_offset_y, 0, PLATFORM_HEIGHT, PLATFORM_BIG_WIDTH, PLATFORM_HEIGHT, 0);
 	}
 	else {
-		display_draw_image_region(image_tile_platform, self->x - camera_offset_x, self->y- camera_offset_y, 0, 0, PLATFORM_SMALL_WIDTH, PLATFORM_HEIGHT, 0);
+		display_draw_image_region(image_tile_platform, self->x - camera_offset_x, self->y - camera_offset_y, 0, 0, PLATFORM_SMALL_WIDTH, PLATFORM_HEIGHT, 0);
 	}
 }

@@ -34,5 +34,5 @@ void entity_player_update(Entity* self) {
 }
 
 void entity_player_draw(Entity* self) {
-	display_draw_image(image_player, self->x - camera_offset_x, self->y - camera_offset_y, 0);
+	display_draw_image(image_player, self->x - camera_offset_x, self->y - camera_offset_y, OP_OVERLAY);
 }

@@ -9,3 +9,6 @@ Player            255 000 000
 
 Platform          000 255 000 (2 tiles = small platform, 3 tiles = big platform)
 Falling Platform  000 128 000 (2 tiles = small platform, 3 tiles = big platform)
+
+Hazard (Chip)     000 000 255
+Hazard (Spikes)   000 128 255

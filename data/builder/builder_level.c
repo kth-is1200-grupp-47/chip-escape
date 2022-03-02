@@ -38,7 +38,7 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 		/* Match pixel color with tile id */
 		switch(color) {
 			/* Ground */
-			case 0xffffffff:
+			case 0xffffffff: {
 				*output = TILE_ID_GROUND;
 
 				int offset_x = 1;
@@ -99,6 +99,7 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				*output |= offset_x << 4;
 				*output |= offset_y << 6;
 				break;
+			}
 
 			/* Player */
 			case 0xff0000ff:
@@ -121,15 +122,15 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 
 					/* Set bits for platform */
 					if(falling) {
-						*output |= TILE_PLATFORM_BIT_FALL;
+						*output |= TILE_PLATFORM_BIT_FALL << 4;
 					}
 
 					/* Is big platform? */
 					if(get_image_color_at(input, x + 2, y, iw, ih) == color) {
-						*output |= TILE_PLATFORM_BIT_BIG;
+						*output |= TILE_PLATFORM_BIT_BIG << 4;
 					}
 					else {
-						*output |= TILE_PLATFORM_BIT_SMALL;
+						*output |= TILE_PLATFORM_BIT_SMALL << 4;
 					}
 				}
 				else {
@@ -138,6 +139,19 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				}
 
 				break;
+
+			/* Hazard */
+			case 0x0000ffff:
+			case 0x0080ffff: {
+				*output = TILE_ID_HAZARD;
+
+				int offset_x = color == 0x0080ffff;
+				int offset_y = 0;
+
+				*output |= offset_x << 4;
+				*output |= offset_y << 6;
+				break;
+			}
 
 			default:
 				printf("builder_image: Unknown tile type 0x%x at %d %d\n", color, x, y);
