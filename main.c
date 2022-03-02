@@ -39,8 +39,9 @@ int main() {
 	int start_time = timer_time();
 	/* The time it took to process the last frame. */
 	int elapsed_time = 0;
-	/* The current frame number */
+	/* The current frame number (reset when switching states) */
 	int frame = 0;
+	GameState last_state = STATE_MAIN_MENU;
 
 	/* Start game at test level */
 	switch_state(STATE_MAIN_MENU, 0);
@@ -77,10 +78,14 @@ int main() {
 		/* If this frame took less than 16 ms we need to sleep */
 		timer_wait(MIN_FRAME_TIME - elapsed_time);
 
-		start_time = timer_time();
+		/* Reset frame number when switching states */
+		if(last_state != current_state) {
+			frame = 0;
+		}
 		frame++;
 
 		/* We start the next frame by sending the buffer to the display */
+		start_time = timer_time();
 		display_send_buffer();
 	}
 

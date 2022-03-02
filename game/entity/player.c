@@ -2,6 +2,10 @@
 #include "game/entity.h"
 
 #include "hw/display.h"
+#include "hw/inputs.h"
+
+/* From level.c */
+extern Level current_level;
 
 USE_IMAGE(player);
 
@@ -12,7 +16,21 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 }
 
 void entity_player_update(Entity* self) {
+	int btns = getBtns();
 
+	if(btns & (1 << 0)) {
+		self->x++;
+	}
+	if(btns & (1 << 1)) {
+		self->x--;
+	}
+
+	if(btns & (1 << 2)) {
+		self->y++;
+	}
+	if(btns & (1 << 3)) {
+		self->y--;
+	}
 }
 
 void entity_player_draw(Entity* self) {
