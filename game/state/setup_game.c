@@ -5,16 +5,16 @@
 #include "hw/input.h"
 
 USE_IMAGE(icons);
-USE_IMAGE(btns);
-
 USE_LEVEL(level1);
 
 /* Animation for arrows */
-int left_arrow_offset = 0;
-int right_arrow_offset = 0;
+int left_arrow_offset;
+int right_arrow_offset;
 
 void setup_game_load() {
 	current_difficulty = DIFFICULTY_NORMAL;
+	left_arrow_offset = 0;
+	right_arrow_offset = 0;
 }
 
 void setup_game_update(int framenum) {
@@ -58,11 +58,10 @@ void setup_game_draw() {
 	int df_endx = df_startx + strlen(longest_df) * FONT_CHAR_WIDTH;
 
 	/* Left arrow */
-	display_draw_image_region(image_icons, df_startx - 10 - left_arrow_offset / 4, FONT_CHAR_HEIGHT + 4, 7, 0, 6, 6, 0);
+	display_draw_image_region(image_icons, df_startx - 10 - left_arrow_offset / 4, FONT_CHAR_HEIGHT + 3, 7, 0, 6, 6, 0);
 	/* Right arrow */
-	display_draw_image_region(image_icons, df_endx + 4 + right_arrow_offset / 4, FONT_CHAR_HEIGHT + 4, 7 + 6, 0, 6, 6, 0);
+	display_draw_image_region(image_icons, df_endx + 4 + right_arrow_offset / 4, FONT_CHAR_HEIGHT + 3, 7 + 6, 0, 6, 6, 0);
 
-	const char* label = "Continue";
-	display_draw_image_region(image_btns, DISPLAY_WIDTH / 2 - FONT_CHAR_WIDTH * strlen(label) / 2 - 6, DISPLAY_HEIGHT - 10, 0, 0, 9, 9, 0);
-	display_draw_text(label, DISPLAY_WIDTH / 2 - FONT_CHAR_WIDTH * strlen(label) / 2 + 6, DISPLAY_HEIGHT - 9, 0);
+	const char* label = "[BTN1] Continue";
+	display_draw_text(label, DISPLAY_WIDTH / 2 - FONT_CHAR_WIDTH * strlen(label) / 2, DISPLAY_HEIGHT - 9, 0);
 }
