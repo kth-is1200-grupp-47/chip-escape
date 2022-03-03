@@ -41,9 +41,10 @@ int main() {
 	int elapsed_time = 0;
 	/* The current frame number (reset when switching states) */
 	int frame = 0;
+	/* Last state (for resetting frame) */
 	GameState last_state = STATE_MAIN_MENU;
 
-	/* Start game at test level */
+	/* Start game at main menu */
 	switch_state(STATE_MAIN_MENU, 0);
 
 	while(true) {
@@ -81,6 +82,7 @@ int main() {
 		/* Reset frame number when switching states */
 		if(last_state != current_state) {
 			frame = 0;
+			last_state = current_state;
 		}
 		frame++;
 

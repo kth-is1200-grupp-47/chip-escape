@@ -30,7 +30,7 @@ typedef struct {
 	/* Position */
 	int x, y;
 	/* This is either a pointer to entity data, or a 32-bit integer containing data */
-	void* data; /* TODO: safe? */
+	uint32_t data;
 } Entity;
 
 /* Spawns entities from some level tiles */

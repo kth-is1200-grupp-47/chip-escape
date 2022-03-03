@@ -59,8 +59,8 @@ static void display_write_bit(bool enable, uint16_t x, uint16_t y) {
 	uint8_t page = y / DISPLAY_PAGE_HEIGHT;
 	uint8_t bit = y - (page * DISPLAY_PAGE_HEIGHT);
 
-	/* Allow writes outside the display area but do nothing (bitwise check for speed). */
-	if(x & DISPLAY_WIDTH || y & DISPLAY_HEIGHT) {
+	/* Allow writes outside the display area but do nothing. */
+	if(x >= DISPLAY_WIDTH || y >= DISPLAY_HEIGHT) {
 		return;
 	}
 
