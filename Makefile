@@ -15,7 +15,7 @@ LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 # TODO: Check if optimizations/LTO cause any problems
 CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu99 -Ofast -Wall -Wno-unused-function -Wno-unused-variable -flto -I"$(shell pwd)"
 ASFLAGS		+= -msoft-float
-LDFLAGS		+= -T $(LINKSCRIPT) -lc -lm -s -flto
+LDFLAGS		+= -T $(LINKSCRIPT) -lc -s -flto
 
 # Filenames
 BINDIR      = bin

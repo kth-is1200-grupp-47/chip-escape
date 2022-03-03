@@ -5,8 +5,8 @@
 uint8_t switches;
 
 /* Save buttons from last frame */
-uint8_t last_buttons;
-uint8_t buttons;
+uint16_t last_buttons;
+uint16_t buttons;
 
 /****************************************
  * This function initializes the inputs *
@@ -43,17 +43,21 @@ void input_chipkit_poll() {
 	/* Map ChipKIT registers to buttons defined in input.h */
 	if(portd_reg & (1 << 7)) {
 		buttons |= BUTTON_LEFT;
+		buttons |= BUTTON_CHIPKIT4;
 	}
 	if(portd_reg & (1 << 6)) {
 		buttons |= BUTTON_RIGHT;
+		buttons |= BUTTON_CHIPKIT3;
 	}
 	if(portd_reg & (1 << 5)) {
 		buttons |= BUTTON_JUMP;
 		buttons |= BUTTON_MENU_UP;
+		buttons |= BUTTON_CHIPKIT2;
 	}
 	if(PORTF & (1 << 1)) {
 		buttons |= BUTTON_ACTION;
 		buttons |= BUTTON_MENU_DOWN;
+		buttons |= BUTTON_CHIPKIT1;
 	}
 }
 
@@ -72,14 +76,14 @@ uint8_t input_get_sw() {
 	return switches;
 }
 
-uint8_t input_get_btns() {
+uint16_t input_get_btns() {
 	return buttons;
 }
 
-uint8_t input_get_btns_pressed() {
+uint16_t input_get_btns_pressed() {
 	return buttons & ~last_buttons;
 }
 
-uint8_t input_get_btns_released() {
+uint16_t input_get_btns_released() {
 	return ~buttons & last_buttons;
 }

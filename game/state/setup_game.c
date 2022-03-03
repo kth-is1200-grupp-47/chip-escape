@@ -5,13 +5,16 @@
 #include "hw/input.h"
 
 USE_IMAGE(icons);
-USE_LEVEL(level1);
+
+Level next_level;
 
 /* Animation for arrows */
 int left_arrow_offset;
 int right_arrow_offset;
 
-void setup_game_load() {
+void setup_game_load(Level level) {
+	next_level = level;
+
 	current_difficulty = DIFFICULTY_NORMAL;
 	left_arrow_offset = 0;
 	right_arrow_offset = 0;
@@ -27,7 +30,7 @@ void setup_game_update(int framenum) {
 		right_arrow_offset = 12;
 	}
 	if(input_get_btns_pressed() & BUTTON_ACTION) {
-		switch_state(STATE_LEVEL, level_level1);
+		switch_state(STATE_LEVEL, next_level);
 	}
 
 	if(left_arrow_offset > 0) {

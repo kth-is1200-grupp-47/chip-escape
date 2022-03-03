@@ -17,6 +17,8 @@
 #define STATE_LEVEL 2
 /* Player is at the highscore list */
 #define STATE_HIGHSCORE_LIST 3
+/* Player can select level */
+#define STATE_SELECT_LEVEL 4
 
 typedef uint8_t GameState;
 
@@ -37,7 +39,7 @@ void main_menu_load();
 void main_menu_update(int framenum);
 void main_menu_draw();
 
-void setup_game_load();
+void setup_game_load(Level data);
 void setup_game_update(int framenum);
 void setup_game_draw();
 
@@ -48,6 +50,10 @@ void level_draw();
 void high_score_load(int data);
 void high_score_update(int framenum);
 void high_score_draw();
+
+void select_level_load();
+void select_level_update(int framenum);
+void select_level_draw();
 
 /* Switch to a different state and run load function */
 void switch_state(GameState new_state, const void* load_data);

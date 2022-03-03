@@ -46,7 +46,9 @@ void i2c_code() {
 USE_IMAGE(logo);
 USE_IMAGE(icons);
 
-const char* options[] = { "Start Game", "Highscores", "Credits" };
+USE_LEVEL(level1);
+
+const char* options[] = { "Start Game", "Highscores", "Select Level" };
 int selected_option;
 
 /* Animation for arrows */
@@ -86,7 +88,15 @@ void main_menu_update(int frame) {
 	if(input_get_btns_pressed() & BUTTON_ACTION){
 		switch(selected_option) {
 			case 0:
-				switch_state(STATE_SETUP_GAME, 0);
+				switch_state(STATE_SETUP_GAME, level_level1);
+				break;
+
+			case 1:
+				switch_state(STATE_HIGHSCORE_LIST, 0);
+				break;
+
+			case 2:
+				switch_state(STATE_SELECT_LEVEL, 0);
 				break;
 		}
 	}
@@ -95,7 +105,7 @@ void main_menu_update(int frame) {
 void main_menu_draw() {
 	display_draw_image(image_logo, 0, 0, 0);
 
-	const char* longest_opt = options[0];
+	const char* longest_opt = options[2];
 
 	int opt_startx = DISPLAY_WIDTH / 2 - strlen(longest_opt) * FONT_CHAR_WIDTH / 2;
 	int opt_endx = opt_startx + strlen(longest_opt) * FONT_CHAR_WIDTH;

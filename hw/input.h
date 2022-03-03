@@ -21,6 +21,15 @@
 /* Button for going down in menu (ChipKIT = BTN1, NES = ???) */
 #define BUTTON_MENU_DOWN 32
 
+/* Button 1 on ChipKIT only */
+#define BUTTON_CHIPKIT1 64
+/* Button 2 on ChipKIT only */
+#define BUTTON_CHIPKIT2 128
+/* Button 3 on ChipKIT only */
+#define BUTTON_CHIPKIT3 256
+/* Button 4 on ChipKIT only */
+#define BUTTON_CHIPKIT4 512
+
 /* Runs at game start */
 void input_init();
 /* Runs at beginning of every frame */
@@ -30,8 +39,8 @@ void input_poll();
 uint8_t input_get_sw();
 
 /* button - BUTTON_XXX */
-uint8_t input_get_btns();
-uint8_t input_get_btns_pressed() /* current && !last */;
-uint8_t input_get_btns_released() /* !current && last */;
+uint16_t input_get_btns();
+uint16_t input_get_btns_pressed() /* current && !last */;
+uint16_t input_get_btns_released() /* !current && last */;
 
 #endif

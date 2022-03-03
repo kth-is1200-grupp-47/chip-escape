@@ -83,6 +83,11 @@ int main() {
 				high_score_update(frame);
 				high_score_draw();
 				break;
+
+			case STATE_SELECT_LEVEL:
+				select_level_update(frame);
+				select_level_draw();
+				break;
 		}
 
 		/* Debugging functions */
