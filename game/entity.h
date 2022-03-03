@@ -36,6 +36,8 @@ typedef struct {
 	uint32_t data;
 } Entity;
 
+extern Entity entities[MAX_ENTITIES + 1];
+
 /* Spawns entities from some level tiles */
 void entity_load_from_level_tiles(Level level, Entity* array_start);
 
@@ -45,20 +47,20 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 
 /* Update all entities in array */
-void entity_update_all(Entity* array_start);
+void entity_update_all(int framenum);
 /* Draw all entities in array */
-void entity_draw_all(Entity* array_start);
+void entity_draw_all();
 
 /* Returns true if any entity or tile collided at the specified position */
-bool entity_try_collide_all(Entity* array_start, int x, int y);
+bool entity_try_collide_all(int x, int y);
 
 /* Update ENTITY_TYPE_PLAYER */
-void entity_player_update(Entity* self);
+void entity_player_update(Entity* self, int framenum);
 /* Draw ENTITY_TYPE_PLAYER */
 void entity_player_draw(Entity* self);
 
 /* Update ENTITY_TYPE_PLATFORM */
-void entity_platform_update(Entity* self);
+void entity_platform_update(Entity* self, int framenum);
 /* Draw ENTITY_TYPE_PLATFORM */
 void entity_platform_draw(Entity* self);
 /* Try collide ENTITY_TYPE_PLATFORM */

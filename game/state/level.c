@@ -12,8 +12,6 @@
 
 /* Level we're playing right now */
 Level current_level;
-/* Spawned entities */
-Entity entities[MAX_ENTITIES + 1]; /* last element will always have type none */
 /* Pointer to player entity */
 Entity* player_entity;
 
@@ -42,7 +40,7 @@ void level_load(Level data) {
 }
 
 void level_update(int framenum) {
-	entity_update_all(entities);
+	entity_update_all(framenum);
 	camera_update(framenum);
 }
 
@@ -99,5 +97,5 @@ void level_draw() {
 		}
 	}
 
-	entity_draw_all(entities);
+	entity_draw_all();
 }

@@ -4,9 +4,10 @@
 
 /* From level.c */
 extern Level current_level;
-extern Entity entities[MAX_ENTITIES + 1];
 
-#define check_spawn_entity(etile, etype, function) \
+Entity entities[MAX_ENTITIES + 1];
+
+#define spawn_entity(etile, etype, function) \
 	case etile: \
 		current_entity->type = etype; \
 		function(current_entity, x, y, tile); \
@@ -22,8 +23,8 @@ void entity_load_from_level_tiles(Level level, Entity* array_start) {
 			uint8_t type = level_extract_tile_id(tile);
 
 			switch(type) {
-				check_spawn_entity(TILE_ID_PLAYER, ENTITY_TYPE_PLAYER, entity_player_spawn);
-				check_spawn_entity(TILE_ID_PLATFORM, ENTITY_TYPE_PLATFORM, entity_platform_spawn);
+				spawn_entity(TILE_ID_PLAYER, ENTITY_TYPE_PLAYER, entity_player_spawn);
+				spawn_entity(TILE_ID_PLATFORM, ENTITY_TYPE_PLATFORM, entity_platform_spawn);
 			}
 
 			/* Ensure we don't spawn too many entities */
@@ -34,11 +35,11 @@ void entity_load_from_level_tiles(Level level, Entity* array_start) {
 
 #define update_entity(etype, function) \
 	case etype: \
-		function(current_entity); \
+		function(current_entity, framenum); \
 		break
 
-void entity_update_all(Entity* array_start) {
-	Entity* current_entity = array_start;
+void entity_update_all(int framenum) {
+	Entity* current_entity = entities;
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
 		switch(current_entity->type) {
@@ -50,13 +51,18 @@ void entity_update_all(Entity* array_start) {
 	}
 }
 
-void entity_draw_all(Entity* array_start) {
-	Entity* current_entity = array_start;
+#define draw_entity(etype, function) \
+	case etype: \
+		function(current_entity); \
+		break
+
+void entity_draw_all() {
+	Entity* current_entity = entities;
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
 		switch(current_entity->type) {
-			update_entity(ENTITY_TYPE_PLAYER, entity_player_draw);
-			update_entity(ENTITY_TYPE_PLATFORM, entity_platform_draw);
+			draw_entity(ENTITY_TYPE_PLAYER, entity_player_draw);
+			draw_entity(ENTITY_TYPE_PLATFORM, entity_platform_draw);
 		}
 
 		current_entity++;
@@ -68,8 +74,8 @@ void entity_draw_all(Entity* array_start) {
 		if(function(current_entity, x, y)) { return true; } \
 		break
 
-bool entity_try_collide_all(Entity* array_start, int x, int y) {
-	Entity* current_entity = array_start;
+bool entity_try_collide_all(int x, int y) {
+	Entity* current_entity = entities;
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
 		switch(current_entity->type) {
@@ -91,6 +97,7 @@ bool entity_try_collide_all(Entity* array_start, int x, int y) {
 	return false;
 }
 
+/* TODO: replace with better alternative */
 void entity_size(Entity* entity, int* x, int* y) {
 	switch(entity->type) {
 		case ENTITY_TYPE_PLAYER:
@@ -108,9 +115,10 @@ bool entity_step_x(Entity* entity, int dir, bool collision) {
 		entity_size(entity, &sizex, &sizey);
 		assert(sizex != 0 && sizey != 0);
 
+		/* Check all pixels to left or right of entity */
 		int collidex = dir == -1 ? entity->x - 1 : entity->x + sizex;
-		for(int y = entity->y; y < entity->y + sizey; y++) {
-			if(entity_try_collide_all(entities, collidex, y)) {
+		for(int y = entity->y; y != entity->y + sizey; ++y) {
+			if(entity_try_collide_all(collidex, y)) {
 				return false;
 			}
 
@@ -129,9 +137,10 @@ bool entity_step_y(Entity* entity, int dir, bool collision) {
 		entity_size(entity, &sizex, &sizey);
 		assert(sizex != 0 && sizey != 0);
 
+		/* Check all pixels above or below entity */
 		int collidey = dir == -1 ? entity->y - 1 : entity->y + sizey;
-		for(int x = entity->x; x < entity->x + sizex; x++) {
-			if(entity_try_collide_all(entities, x, collidey)) {
+		for(int x = entity->x; x != entity->x + sizex; ++x) {
+			if(entity_try_collide_all(x, collidey)) {
 				return false;
 			}
 		}
@@ -142,17 +151,18 @@ bool entity_step_y(Entity* entity, int dir, bool collision) {
 }
 
 void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collision) {
+	/* Absolute value of mx and my */
 	int absx = *mx < 0 ? -*mx : *mx;
 	int absy = *my < 0 ? -*my : *my;
 
-	/* Integer number */
-	for(int x = 0; x < absx / 100; x++) {
+	/* Attempt movement pixel by pixel for both X and Y directions */
+	for(int x = 0; x != absx / 100; ++x) {
 		if(!entity_step_x(entity, *mx < 0 ? -1 : 1, collision)) {
 			*mx = 0;
 			break;
 		}
 	}
-	for(int y = 0; y < absy / 100; y++) {
+	for(int y = 0; y != absy / 100; ++y) {
 		if(!entity_step_y(entity, *my < 0 ? -1 : 1, collision)) {
 			*my = 0;
 			break;
@@ -165,10 +175,9 @@ void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collis
 			*rx = 0;
 		}
 		else {
-			/* Decimals 00-99 */
+			/* Extract remainder and add to total */
 			*rx += absx % 100;
 
-			int stepx = *mx/absx;
 			while(*rx >= 100) {
 				if(!entity_step_x(entity, *mx < 0 ? -1 : 1, collision)) {
 					*mx = 0;
@@ -186,10 +195,9 @@ void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collis
 			*ry = 0;
 		}
 		else {
-			/* Decimals 00-99 */
+			/* Extract remainder and add to total */
 			*ry += absy % 100;
 
-			int stepy = *my/absy;
 			while(*ry >= 100) {
 				if(!entity_step_y(entity, *my < 0 ? -1 : 1, collision)) {
 					*my = 0;

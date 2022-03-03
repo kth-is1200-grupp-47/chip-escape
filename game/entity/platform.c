@@ -24,7 +24,7 @@ void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledat
 	}
 }
 
-void entity_platform_update(Entity* self) {
+void entity_platform_update(Entity* self, int framenum) {
 
 }
 

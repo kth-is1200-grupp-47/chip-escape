@@ -8,10 +8,6 @@
 USE_IMAGE(player);
 USE_IMAGE(icons);
 
-/* From level.c */
-extern Level current_level;
-extern Entity entities[MAX_ENTITIES + 1];
-
 #define DIRECTION_LEFT 2
 #define DIRECTION_RIGHT 1
 
@@ -20,7 +16,7 @@ extern Entity entities[MAX_ENTITIES + 1];
 
 typedef struct {
 	/* Speed in both directions. Divide by 100 to get pixel value */
-	int speed_x, speed_rx, speed_y, speed_ry;
+	int speed_x, speed_y, speed_rx, speed_ry;
 
 	/* Direction player is facing. */
 	uint8_t direction;
@@ -54,7 +50,7 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 	self->data = (uint32_t)&pdata;
 }
 
-void entity_player_update(Entity* self) {
+void entity_player_update(Entity* self, int framenum) {
 	PlayerData* data = (PlayerData*)self->data;
 
 	if(getBtns() & 4) {
@@ -102,7 +98,7 @@ void entity_player_update(Entity* self) {
 
 	/* Check if we're on the ground after moving */
 	for(int x = self->x; x < self->x + ENTITY_PLAYER_WIDTH; x++) {
-		if(entity_try_collide_all(entities, x, self->y + ENTITY_PLAYER_HEIGHT)) {
+		if(entity_try_collide_all(x, self->y + ENTITY_PLAYER_HEIGHT)) {
 			data->on_ground = true;
 			return;
 		}
