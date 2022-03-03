@@ -1,8 +1,6 @@
 #include "game/camera.h"
 #include "hw/display.h"
 
-USE_IMAGE(player);
-
 /* From level.c */
 extern Level current_level;
 
@@ -18,10 +16,11 @@ void camera_reset(Entity* player) {
 }
 
 void camera_update(int framenum) {
-	camera_offset_x = following_player->x + width_of(image_player) / 2 - DISPLAY_WIDTH / 2;
+	camera_offset_x = following_player->x + ENTITY_PLAYER_WIDTH / 2 - DISPLAY_WIDTH / 2;
 	/* Focus on feet of player */
-	camera_offset_y = following_player->y + height_of(image_player) - 2 - DISPLAY_HEIGHT / 2;
+	camera_offset_y = following_player->y + ENTITY_PLAYER_HEIGHT - 2 - DISPLAY_HEIGHT / 2;
 
+	/* Avoid going out of bounds */
 	if(camera_offset_x < 0) {
 		camera_offset_x = 0;
 	}

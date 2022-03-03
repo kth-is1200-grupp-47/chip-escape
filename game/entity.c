@@ -58,3 +58,58 @@ void entity_draw_all(Entity* array_start) {
 		current_entity++;
 	}
 }
+
+#define try_collide_entity(etype, function) \
+	case etype: \
+		function(current_entity, x, y); \
+		break
+
+bool entity_try_collide_all(Entity* array_start, int x, int y) {
+	Entity* current_entity = array_start;
+
+	while(current_entity->type != ENTITY_TYPE_NONE) {
+		switch(current_entity->type) {
+			try_collide_entity(ENTITY_TYPE_PLATFORM, entity_platform_try_collide);
+		}
+
+		current_entity++;
+	}
+}
+
+void entity_move(Entity* entity, int mx, int my, int* rx, int* ry) {
+	/* Integer number */
+	entity->x += mx / 100;
+	entity->y += my / 100;
+
+	int absx = mx < 0 ? -mx : mx;
+	int absy = my < 0 ? -my : my;
+
+	/* Fractions */
+	if(mx == 0) {
+		*rx = 0;
+	}
+	else {
+		/* Decimals 00-99 */
+		*rx += absx % 100;
+
+		int stepx = mx/absx;
+		while(*rx >= 100) {
+			entity->x += stepx;
+			*rx -= 100;
+		}
+	}
+
+	if(my == 0) {
+		*ry = 0;
+	}
+	else {
+		/* Decimals 00-99 */
+		*ry += absy % 100;
+
+		int stepy = my/absy;
+		while(*ry >= 100) {
+			entity->y += stepy;
+			*ry -= 100;
+		}
+	}
+}

@@ -36,3 +36,17 @@ void entity_platform_draw(Entity* self) {
 		display_draw_image_region(image_tile_platform, self->x - camera_offset_x, self->y - camera_offset_y, 0, 0, PLATFORM_SMALL_WIDTH, PLATFORM_HEIGHT, 0);
 	}
 }
+
+bool entity_platform_try_collide(Entity* self, int x, int y) {
+	/* TODO: fall */
+	if(self->data & TILE_PLATFORM_BIT_BIG) {
+		return
+			x >= self->x && x < self->x + PLATFORM_BIG_WIDTH &&
+			y >= self->y && y < self->y + PLATFORM_HEIGHT;
+	}
+	else {
+		return
+			x >= self->x && x < self->x + PLATFORM_SMALL_WIDTH &&
+			y >= self->y && y < self->y + PLATFORM_HEIGHT;
+	}
+}
