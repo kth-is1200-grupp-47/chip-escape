@@ -97,27 +97,32 @@ bool entity_try_collide_all(int x, int y) {
 	return false;
 }
 
-/* TODO: replace with better alternative */
-void entity_size(Entity* entity, int* x, int* y) {
+int entity_size_x(Entity* entity) {
 	switch(entity->type) {
 		case ENTITY_TYPE_PLAYER:
-			*x = ENTITY_PLAYER_WIDTH;
-			*y = ENTITY_PLAYER_HEIGHT;
-			break;
+			return ENTITY_PLAYER_WIDTH;
 	}
+
+	return 0;
+}
+
+int entity_size_y(Entity* entity) {
+	switch(entity->type) {
+		case ENTITY_TYPE_PLAYER:
+			return ENTITY_PLAYER_HEIGHT;
+	}
+
+	return 0;
 }
 
 /* Returns false if entity was stopped */
 bool entity_step_x(Entity* entity, int dir, bool collision) {
 	if(collision) {
-		int sizex = 0;
-		int sizey = 0;
-		entity_size(entity, &sizex, &sizey);
-		assert(sizex != 0 && sizey != 0);
+		assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);
 
 		/* Check all pixels to left or right of entity */
-		int collidex = dir == -1 ? entity->x - 1 : entity->x + sizex;
-		for(int y = entity->y; y != entity->y + sizey; ++y) {
+		int collidex = dir == -1 ? entity->x - 1 : entity->x + entity_size_x(entity);
+		for(int y = entity->y; y != entity->y + entity_size_y(entity); ++y) {
 			if(entity_try_collide_all(collidex, y)) {
 				return false;
 			}
@@ -132,14 +137,11 @@ bool entity_step_x(Entity* entity, int dir, bool collision) {
 /* Returns false if entity was stopped */
 bool entity_step_y(Entity* entity, int dir, bool collision) {
 	if(collision) {
-		int sizex = 0;
-		int sizey = 0;
-		entity_size(entity, &sizex, &sizey);
-		assert(sizex != 0 && sizey != 0);
+		assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);
 
 		/* Check all pixels above or below entity */
-		int collidey = dir == -1 ? entity->y - 1 : entity->y + sizey;
-		for(int x = entity->x; x != entity->x + sizex; ++x) {
+		int collidey = dir == -1 ? entity->y - 1 : entity->y + entity_size_y(entity);
+		for(int x = entity->x; x != entity->x + entity_size_x(entity); ++x) {
 			if(entity_try_collide_all(x, collidey)) {
 				return false;
 			}
@@ -150,18 +152,31 @@ bool entity_step_y(Entity* entity, int dir, bool collision) {
 	return true;
 }
 
+void entity_keep_in_world(Entity* entity) {
+	/* Entites can't move outside the world in X axis */
+	if(entity->x < 0) {
+		entity->x = 0;
+	}
+	if(entity->x > level_width(current_level) * TILE_SIZE - entity_size_x(entity)) {
+		entity->x = level_width(current_level) * TILE_SIZE - entity_size_x(entity);
+	}
+}
+
 void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collision) {
 	/* Absolute value of mx and my */
 	int absx = *mx < 0 ? -*mx : *mx;
 	int absy = *my < 0 ? -*my : *my;
 
-	/* Attempt movement pixel by pixel for both X and Y directions */
+	/* Attempt movement pixel by pixel for both X and Y axis */
 	for(int x = 0; x != absx / 100; ++x) {
 		if(!entity_step_x(entity, *mx < 0 ? -1 : 1, collision)) {
 			*mx = 0;
 			break;
 		}
 	}
+
+	entity_keep_in_world(entity);
+
 	for(int y = 0; y != absy / 100; ++y) {
 		if(!entity_step_y(entity, *my < 0 ? -1 : 1, collision)) {
 			*my = 0;
@@ -187,6 +202,8 @@ void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collis
 
 				*rx -= 100;
 			}
+
+			entity_keep_in_world(entity);
 		}
 	}
 
