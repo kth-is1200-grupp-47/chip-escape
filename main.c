@@ -48,6 +48,18 @@ int main() {
 	switch_state(STATE_MAIN_MENU, 0);
 
 	while(true) {
+		/* Reset frame number when switching states */
+		if(switched_state) {
+			/* Fade out display for a few frames if we switched state */
+			display_clear(false);
+			display_send_buffer();
+			timer_wait(MIN_FRAME_TIME * 15);
+			start_time += MIN_FRAME_TIME * 15;
+
+			frame = 0;
+			switched_state = false;
+		}
+
 		display_clear(false);
 		input_poll();
 
@@ -55,6 +67,11 @@ int main() {
 			case STATE_MAIN_MENU:
 				main_menu_update(frame);
 				main_menu_draw();
+				break;
+
+			case STATE_SETUP_GAME:
+				setup_game_update(frame);
+				setup_game_draw();
 				break;
 
 			case STATE_LEVEL:
@@ -80,11 +97,6 @@ int main() {
 		/* If this frame took less than 16 ms we need to sleep */
 		timer_wait(MIN_FRAME_TIME - elapsed_time);
 
-		/* Reset frame number when switching states */
-		if(last_state != current_state) {
-			frame = 0;
-			last_state = current_state;
-		}
 		frame++;
 
 		/* We start the next frame by sending the buffer to the display */

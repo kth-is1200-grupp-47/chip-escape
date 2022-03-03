@@ -11,10 +11,12 @@
 
 /* Player is in the main menu */
 #define STATE_MAIN_MENU 0
+/* Player is starting a new game (difficulty setup) */
+#define STATE_SETUP_GAME 1
 /* Player is in a level */
-#define STATE_LEVEL 1
+#define STATE_LEVEL 2
 /* Player is at the highscore list */
-#define STATE_HIGHSCORE_LIST 2
+#define STATE_HIGHSCORE_LIST 3
 
 typedef uint8_t GameState;
 
@@ -22,6 +24,8 @@ typedef uint8_t GameState;
 extern GameState current_state;
 /* The previous state of the game */
 extern GameState previous_state;
+/* If state was changed or reset this frame */
+extern bool switched_state;
 
 /*
  * "load()" runs the first time the game switches to a new state
@@ -32,6 +36,10 @@ extern GameState previous_state;
 void main_menu_load();
 void main_menu_update(int framenum);
 void main_menu_draw();
+
+void setup_game_load();
+void setup_game_update(int framenum);
+void setup_game_draw();
 
 void level_load(Level data);
 void level_update(int framenum);

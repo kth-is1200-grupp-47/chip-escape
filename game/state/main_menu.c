@@ -3,8 +3,6 @@
 #include "hw/eeprom.h"
 #include "hw/display.h"
 
-USE_LEVEL(level1);
-
 int eeprom_value = 0;
 
 void main_menu_load() {
@@ -56,7 +54,7 @@ void main_menu_load() {
 void main_menu_update(int frame) {
 	/* Play */
 	if(input_get_btns_pressed() & BUTTON_ACTION){
-		switch_state(STATE_LEVEL, level_level1);
+		switch_state(STATE_SETUP_GAME, 0);
 	}
 }
 
