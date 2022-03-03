@@ -13,7 +13,7 @@ LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 
 # Compiler and linker flags
 # TODO: Check if optimizations/LTO cause any problems
-CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu99 -Ofast -Wall -Wno-unused-function -flto -I"$(shell pwd)"
+CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float -std=gnu99 -Ofast -Wall -Wno-unused-function -Wno-unused-variable -flto -I"$(shell pwd)"
 ASFLAGS		+= -msoft-float
 LDFLAGS		+= -T $(LINKSCRIPT) -lc -lm -s -flto
 

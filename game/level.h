@@ -41,4 +41,7 @@ static inline uint8_t level_extract_tile_data(LevelTile tile) {
 	return tile >> 4;
 }
 
+/* All tiles that players/enemies can collide with */
+static uint8_t solid_tiles[] = { TILE_ID_GROUND };
+
 #endif
