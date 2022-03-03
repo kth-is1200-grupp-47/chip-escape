@@ -24,14 +24,14 @@ void camera_update(int framenum) {
 	if(camera_offset_x < 0) {
 		camera_offset_x = 0;
 	}
-	if(camera_offset_x > level_width(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1) {
-		camera_offset_x = level_width(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1;
+	if(camera_offset_x > level_w(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1) {
+		camera_offset_x = level_w(current_level) * TILE_SIZE - DISPLAY_WIDTH - 1;
 	}
 
 	if(camera_offset_y < 0) {
 		camera_offset_y = 0;
 	}
-	if(camera_offset_y > level_height(current_level) * TILE_SIZE - DISPLAY_HEIGHT - 1) {
-		camera_offset_y = level_height(current_level) * TILE_SIZE - DISPLAY_HEIGHT - 1;
+	if(camera_offset_y > level_h(current_level) * TILE_SIZE - DISPLAY_HEIGHT - 1) {
+		camera_offset_y = level_h(current_level) * TILE_SIZE - DISPLAY_HEIGHT - 1;
 	}
 }

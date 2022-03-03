@@ -1,6 +1,7 @@
 #include "game/entity.h"
 #include "debug.h"
 #include <assert.h>
+#include <string.h>
 
 /* From level.c */
 extern Level current_level;
@@ -17,9 +18,9 @@ Entity entities[MAX_ENTITIES + 1];
 void entity_load_from_level_tiles(Level level, Entity* array_start) {
 	Entity* current_entity = array_start;
 
-	for(int y = 0; y != level_height(level); y++) {
-		for(int x = 0; x != level_width(level); x++) {
-			LevelTile tile = level[(y * level_width(level)) + x];
+	for(int y = 0; y != level_h(level); y++) {
+		for(int x = 0; x != level_w(level); x++) {
+			LevelTile tile = level[(y * level_w(level)) + x];
 			uint8_t type = level_extract_tile_id(tile);
 
 			switch(type) {
@@ -85,7 +86,7 @@ bool entity_try_collide_all(int x, int y) {
 		current_entity++;
 	}
 
-	uint8_t tile_at_xy = current_level[(y / TILE_SIZE) * level_width(current_level) + x / TILE_SIZE];
+	uint8_t tile_at_xy = current_level[(y / TILE_SIZE) * level_w(current_level) + x / TILE_SIZE];
 	uint8_t tile_id = level_extract_tile_id(tile_at_xy);
 
 	for(int i = 0; i < sizeof(solid_tiles); i++) {
@@ -157,8 +158,8 @@ void entity_keep_in_world(Entity* entity) {
 	if(entity->x < 0) {
 		entity->x = 0;
 	}
-	if(entity->x > level_width(current_level) * TILE_SIZE - entity_size_x(entity)) {
-		entity->x = level_width(current_level) * TILE_SIZE - entity_size_x(entity);
+	if(entity->x > level_w(current_level) * TILE_SIZE - entity_size_x(entity)) {
+		entity->x = level_w(current_level) * TILE_SIZE - entity_size_x(entity);
 	}
 }
 
@@ -226,4 +227,9 @@ void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collis
 			}
 		}
 	}
+}
+
+void entity_kill(Entity* entity) {
+	memset(entity, 0, sizeof(Entity));
+	entity->type = ENTITY_KILLED;
 }

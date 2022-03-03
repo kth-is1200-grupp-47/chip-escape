@@ -20,7 +20,7 @@ void display_draw_rectangle(bool enable, int x, int y, uint8_t w, uint8_t h) {
 }
 
 void display_draw_image(Image image, int x, int y, DisplayOp effect) {
-	display_draw_image_region(image, x, y, 0, 0, width_of(image), height_of(image), effect);
+	display_draw_image_region(image, x, y, 0, 0, image_w(image), image_h(image), effect);
 }
 
 void display_draw_image_region(Image image, int x, int y, uint8_t rx, uint8_t ry, uint8_t rw, uint8_t rh, DisplayOp effect) {

@@ -10,6 +10,18 @@
 
 USE_IMAGE(tile_platform);
 
+/* From level.c */
+extern Level current_level;
+
+uint8_t get_fall_frames(Entity* self) {
+	return self->data >> 24;
+}
+
+void set_fall_frames(Entity* self, uint8_t f) {
+	self->data &= 0x00ffffff;
+	self->data |= f << 24;
+}
+
 void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata) {
 	uint8_t bits = level_extract_tile_data(tiledata);
 	/* Reinterpret data pointer as integer */
@@ -25,7 +37,18 @@ void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledat
 }
 
 void entity_platform_update(Entity* self, int framenum) {
+	/* Last eight bits of data are how many frames are left until platform falls */
+	if(get_fall_frames(self) > 1) {
+		set_fall_frames(self, get_fall_frames(self) - 1);
+	}
 
+	if(get_fall_frames(self) == 1) {
+		self->y++;
+
+		if(self->y > level_h(current_level) * TILE_SIZE + 10) {
+			entity_kill(self);
+		}
+	}
 }
 
 void entity_platform_draw(Entity* self) {
@@ -38,15 +61,24 @@ void entity_platform_draw(Entity* self) {
 }
 
 bool entity_platform_try_collide(Entity* self, int x, int y) {
-	/* TODO: fall */
+	bool collide = false;
+
 	if(self->data & TILE_PLATFORM_BIT_BIG) {
-		return
+		collide =
 			x >= self->x && x < self->x + PLATFORM_BIG_WIDTH &&
 			y >= self->y && y < self->y + PLATFORM_HEIGHT;
 	}
 	else {
-		return
+		collide =
 			x >= self->x && x < self->x + PLATFORM_SMALL_WIDTH &&
 			y >= self->y && y < self->y + PLATFORM_HEIGHT;
 	}
+
+	if(collide && self->data & TILE_PLATFORM_BIT_FALL) {
+		if(get_fall_frames(self) == 0) {
+			set_fall_frames(self, 60);
+		}
+	}
+
+	return collide;
 }

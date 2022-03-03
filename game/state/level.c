@@ -83,16 +83,16 @@ void level_draw() {
 	int tileendy = tilestarty + DISPLAY_HEIGHT / TILE_SIZE;
 
 	/* Don't go out of bounds */
-	if(tileendx >= level_width(current_level)) {
-		tileendx = level_width(current_level) - 1;
+	if(tileendx >= level_w(current_level)) {
+		tileendx = level_w(current_level) - 1;
 	}
-	if(tileendy >= level_height(current_level)) {
-		tileendy = level_height(current_level) - 1;
+	if(tileendy >= level_h(current_level)) {
+		tileendy = level_h(current_level) - 1;
 	}
 
 	for(int tiley = tilestarty; tiley != tileendy + 1; ++tiley) {
 		for(int tilex = tilestartx; tilex != tileendx + 1; ++tilex) {
-			LevelTile tile = current_level[(tiley * level_width(current_level)) + tilex];
+			LevelTile tile = current_level[(tiley * level_w(current_level)) + tilex];
 			draw_tile(tile, tilex * TILE_SIZE - camera_offset_x, tiley * TILE_SIZE - camera_offset_y);
 		}
 	}
