@@ -60,7 +60,7 @@ void entity_platform_draw(Entity* self) {
 	}
 }
 
-bool entity_platform_try_collide(Entity* self, int x, int y) {
+bool entity_platform_try_collide(Entity* self, Entity* colliding_entity, int x, int y) {
 	bool collide = false;
 
 	if(self->data & TILE_PLATFORM_BIT_BIG) {

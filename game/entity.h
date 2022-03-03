@@ -55,19 +55,21 @@ void entity_update_all(int framenum);
 void entity_draw_all();
 
 /* Returns true if any entity or tile collided at the specified position */
-bool entity_try_collide_all(int x, int y);
+bool entity_try_collide_all(Entity* colliding_entity, int x, int y);
 
 /* Update ENTITY_TYPE_PLAYER */
 void entity_player_update(Entity* self, int framenum);
 /* Draw ENTITY_TYPE_PLAYER */
 void entity_player_draw(Entity* self);
+/* When ENTITY_TYPE_PLAYER is killed */
+void entity_player_kill(Entity* self);
 
 /* Update ENTITY_TYPE_PLATFORM */
 void entity_platform_update(Entity* self, int framenum);
 /* Draw ENTITY_TYPE_PLATFORM */
 void entity_platform_draw(Entity* self);
 /* Try collide ENTITY_TYPE_PLATFORM */
-bool entity_platform_try_collide(Entity* self, int x, int y);
+bool entity_platform_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
 
 /* Moves entity mx/my pixels. mx/my are divided by 100 to allow for more precision. */
 void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collision);

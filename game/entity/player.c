@@ -1,9 +1,14 @@
 #include "game/camera.h"
 #include "game/entity.h"
 #include "game/difficulty.h"
+#include "game/state.h"
 
 #include "hw/display.h"
 #include "hw/input.h"
+#include "hw/timer.h"
+
+/* From level.c */
+extern Level current_level;
 
 USE_IMAGE(player);
 USE_IMAGE(icons);
@@ -109,7 +114,7 @@ void entity_player_update(Entity* self, int framenum) {
 
 	/* Check if we're on the ground after moving */
 	for(int x = self->x; x < self->x + ENTITY_PLAYER_WIDTH; x++) {
-		if(entity_try_collide_all(x, self->y + ENTITY_PLAYER_HEIGHT)) {
+		if(entity_try_collide_all(self, x, self->y + ENTITY_PLAYER_HEIGHT)) {
 			data->on_ground = true;
 			return;
 		}
@@ -117,9 +122,14 @@ void entity_player_update(Entity* self, int framenum) {
 
 	/* If loop ended we're in the air */
 	data->on_ground = false;
+
+	/* If we're below the map we've died */
+	if(self->y >= level_h(current_level) * TILE_SIZE - ENTITY_PLAYER_HEIGHT / 2) {
+		entity_kill(self);
+	}
 }
 
-void entity_player_draw(Entity* self) {
+void draw_self(Entity* self, DisplayOp effect) {
 	PlayerData* data = (PlayerData*)self->data;
 
 	int rx = 0;
@@ -135,14 +145,74 @@ void entity_player_draw(Entity* self) {
 	}
 
 	int ry = data->direction == DIRECTION_LEFT ? 11 : 0;
-	display_draw_image_region(image_player, self->x - camera_offset_x, self->y - camera_offset_y, rx, ry, 8, 11, OP_OVERLAY);
+	display_draw_image_region(image_player, self->x - camera_offset_x, self->y - camera_offset_y, rx, ry, 8, 11, effect);
+}
 
-	/* HUD */
-	display_draw_image_region(image_icons, 0, 1, 0, 0, 7, 6, OP_OVERLAY);
+void draw_hud(Entity* self, DisplayOp effect) {
+	PlayerData* data = (PlayerData*)self->data;
+
+	display_draw_image_region(image_icons, 0, 1, 0, 0, 7, 6, effect);
 	char lives[] = { '0' + data->lives_left, '\0' };
-	display_draw_text(lives, 8, 0, OP_OVERLAY);
+	display_draw_text(lives, 8, 0, effect);
 
 	char buffer[16];
 	sprintf(buffer, "%uP", data->points);
-	display_draw_text(buffer, 20, 0, OP_OVERLAY);
+	display_draw_text(buffer, 20, 0, effect);
+}
+
+void entity_player_draw(Entity* self) {
+	draw_self(self, OP_OVERLAY);
+	draw_hud(self, OP_OVERLAY);
+}
+
+void entity_player_kill(Entity* self) {
+	PlayerData* data = (PlayerData*)self->data;
+
+	bool can_revive = data->lives_left > 1;
+	int new_lives_left = --data->lives_left;
+
+	/* Revive self */
+	self->type = ENTITY_TYPE_PLAYER;
+
+	/* Draw death animation (white background with player) */
+	display_clear(true);
+	display_send_buffer();
+	timer_wait(320);
+
+	/* Show where the player died */
+	draw_self(self, OP_DISABLE);
+	display_send_buffer();
+	timer_wait(1600);
+
+	/* Show button prompt */
+	const char* text = can_revive ? "[BTN4] Revive" : "[BTN4] Highscores";
+	display_clear(true);
+	display_draw_text(text, DISPLAY_WIDTH / 2 - strlen(text) * FONT_CHAR_WIDTH / 2, DISPLAY_HEIGHT / 2 - FONT_CHAR_HEIGHT / 2, OP_DISABLE);
+	display_send_buffer();
+
+	/* Wait until player revives */
+	while(~input_get_btns_pressed() & BUTTON_ACTION) {
+		input_poll();
+		timer_wait(10);
+	}
+
+	/* If the player can't revive we save their points in the highscore table */
+	if(!can_revive) {
+		switch_state(STATE_HIGHSCORE_LIST, (const void*)data->points);
+		return;
+	}
+
+	/* Respawn the player */
+	for(int y = 0; y != level_h(current_level); ++y) {
+		for(int x = 0; x != level_w(current_level); ++x) {
+			LevelTile tile = current_level[(y * level_w(current_level) + x)];
+
+			if(level_extract_tile_id(tile) == TILE_ID_PLAYER) {
+				entity_player_spawn(self, x, y, level_extract_tile_data(tile));
+				break;
+			}
+		}
+	}
+
+	data->lives_left = new_lives_left;
 }
