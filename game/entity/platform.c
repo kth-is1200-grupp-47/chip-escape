@@ -74,9 +74,12 @@ bool entity_platform_try_collide(Entity* self, Entity* colliding_entity, int x, 
 			y >= self->y && y < self->y + PLATFORM_HEIGHT;
 	}
 
-	if(collide && self->data & TILE_PLATFORM_BIT_FALL) {
-		if(get_fall_frames(self) == 0) {
-			set_fall_frames(self, 60);
+	if(collide && colliding_entity->type == ENTITY_TYPE_PLAYER && self->data & TILE_PLATFORM_BIT_FALL) {
+		/* Only fall if player is coming from above */
+		if(colliding_entity->y < y) {
+			if(get_fall_frames(self) == 0) {
+				set_fall_frames(self, 60);
+			}
 		}
 	}
 
