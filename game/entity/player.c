@@ -3,7 +3,7 @@
 #include "game/difficulty.h"
 
 #include "hw/display.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 
 USE_IMAGE(player);
 USE_IMAGE(icons);
@@ -53,19 +53,20 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 void entity_player_update(Entity* self, int framenum) {
 	PlayerData* data = (PlayerData*)self->data;
 
-	if(getBtns() & 4) {
-		data->speed_x = 100;
-		data->direction = DIRECTION_RIGHT;
-		data->animation_frame++;
-	}
-	else if(getBtns() & 8) {
+	if(input_get_btns() & BUTTON_LEFT) {
 		data->speed_x = -100;
 		data->direction = DIRECTION_LEFT;
+		data->animation_frame++;
+	}
+	else if(input_get_btns() & BUTTON_RIGHT) {
+		data->speed_x = 100;
+		data->direction = DIRECTION_RIGHT;
 		data->animation_frame++;
 	}
 	else {
 		data->animation_frame = 0;
 
+		/* Reduce speed slowly. Max speed must be divisible by this value. */
 		if(data->speed_x > 0) {
 			data->speed_x -= 20;
 		}
@@ -74,12 +75,21 @@ void entity_player_update(Entity* self, int framenum) {
 		}
 	}
 
+	/* Wrap around animation after 40 frames */
 	data->animation_frame = data->animation_frame % 40;
 
-	if((data->on_ground || data->jump_frames > 0) && getBtns() & 2) {
+	/* The player can hold the jump button for a few frames to select jump height */
+	bool can_hold_jump =
+		/* Condition A: Player is on ground AND just pressed the jump button */
+		(data->on_ground && input_get_btns_pressed() & BUTTON_JUMP) ||
+		/* Condition B: Player just pressed the jump button AND keeps holding */
+		(data->jump_frames > 0 && input_get_btns() & BUTTON_JUMP);
+
+	if(can_hold_jump) {
 		data->speed_y = -160;
 		data->jump_frames++;
 
+		/* Player can no longer hold jump */
 		if(data->jump_frames > 5) {
 			data->jump_frames = 0;
 		}
@@ -88,6 +98,7 @@ void entity_player_update(Entity* self, int framenum) {
 		data->jump_frames = 0;
 	}
 
+	/* Always apply constant gravity */
 	data->speed_y += GRAVITY;
 	/* Air resistance */
 	if(data->speed_y > 200) {
@@ -103,6 +114,8 @@ void entity_player_update(Entity* self, int framenum) {
 			return;
 		}
 	}
+
+	/* If loop ended we're in the air */
 	data->on_ground = false;
 }
 

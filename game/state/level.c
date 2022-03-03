@@ -4,7 +4,7 @@
 #include "game/camera.h"
 
 #include "hw/display.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 
 #include <assert.h>
 #include <string.h>

@@ -5,7 +5,7 @@
 
 #include "hw/display.h"
 #include "hw/eeprom.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 
 /* Array for initials and scores */
 char initials[13];
@@ -70,13 +70,7 @@ void high_score_load(int data){
 }
 
 void high_score_update(int framenum) {
-	int pushed_buttons = getBtns();
-
-	if(pushed_buttons & 0b1000){
-		switch_state(STATE_MAIN_MENU, 0);
-	}
-
-    if(pushed_buttons & 0b0100){
+    if(input_get_btns_pressed() & BUTTON_MENU_UP){
         if(letter_count == 0){
             letter_count = 26;
             hiscore[in_count] = 0x41 + letter_count;
@@ -88,7 +82,7 @@ void high_score_update(int framenum) {
         }
     }
 
-    if(pushed_buttons & 0b0010){
+    if(input_get_btns_pressed() & BUTTON_MENU_DOWN){
         if(letter_count == 26){
             letter_count = 0;
             hiscore[in_count] = 0x41 + letter_count;
@@ -99,7 +93,7 @@ void high_score_update(int framenum) {
             }
     }
 
-    if(pushed_buttons & 0b0001){
+    if(input_get_btns_pressed() & BUTTON_ACTION){
         if(in_count != 2){
             in_count++;
             letter_count = 0;

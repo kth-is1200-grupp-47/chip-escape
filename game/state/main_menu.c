@@ -1,5 +1,5 @@
 #include "game/state.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 #include "hw/eeprom.h"
 #include "hw/display.h"
 
@@ -54,15 +54,8 @@ void main_menu_load() {
  * Written by Botan Botani                                  *
  ************************************************************/
 void main_menu_update(int frame) {
-	int pushed_buttons = getBtns();
-
-	/* High score */
-	if(pushed_buttons & 0b0010){
-		switch_state(STATE_HIGHSCORE_LIST, 40);
-	}
-
 	/* Play */
-	if(pushed_buttons & 0b1000){
+	if(input_get_btns_pressed() & BUTTON_ACTION){
 		switch_state(STATE_LEVEL, level_level1);
 	}
 }

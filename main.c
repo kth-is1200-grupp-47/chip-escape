@@ -6,7 +6,7 @@
 
 #include "hw/display.h"
 #include "hw/eeprom.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 #include "hw/interrupts.h"
 #include "hw/spi.h"
 #include "hw/timer.h"
@@ -49,6 +49,7 @@ int main() {
 
 	while(true) {
 		display_clear(false);
+		input_poll();
 
 		switch(current_state) {
 			case STATE_MAIN_MENU:

@@ -3,7 +3,7 @@
 #include "debug.h"
 
 #include "hw/display.h"
-#include "hw/inputs.h"
+#include "hw/input.h"
 #include "hw/timer.h"
 
 bool visual_crash_enabled = false;
@@ -43,7 +43,7 @@ int frames_since_last_second = 0;
 
 void debug_on_frame(int elapsed_time) {
 	/* SW4 = FPS overlay */
-	if(getSW() & (1 << 3)) {
+	if(input_get_sw() & (1 << 3)) {
 		if(last_second_timestamp == 0) {
 			last_second_timestamp = timer_time();
 			memset(fps, 0, 32);
@@ -63,7 +63,7 @@ void debug_on_frame(int elapsed_time) {
 
 void debug_draw_overlay() {
 	/* SW4 = FPS overlay */
-	if(getSW() & (1 << 3)) {
+	if(input_get_sw() & (1 << 3)) {
 		display_draw_rectangle(true, 0, 0, DISPLAY_WIDTH - 1, FONT_CHAR_HEIGHT + 4);
 		display_draw_text(fps, 2, 2, OP_INVERT);
 	}
