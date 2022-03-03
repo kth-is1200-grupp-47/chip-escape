@@ -21,6 +21,8 @@ int letter_count = 0;
 /* Variable for high score */
 int hiscore[] = {0x41, 0x41, 0x41, 0};
 
+/* Variable of where to put high score */
+int hiscore_index = -1;
 
 /* This function converts hex to char */
 char hex2char(int hex){
@@ -37,17 +39,12 @@ void high_score_load(int data){
     previous_state = STATE_LEVEL;
     hiscore[3] = data;
 
-    if((previous_state == STATE_LEVEL) & (data != 0)){
+    if(previous_state == STATE_LEVEL){
         /* Temp variable for acquired high score */
         int temp[] = {0x59, 0x4f, 0x55, hiscore[3]};
 
         /* Saves the temp high score and displays it */
         high_score_put_n_save(temp);
-    }
-
-    /* copy data to an array so that we can save them for later */
-    for(int i = 0; i < 17; i++){
-        //data_array[i] = data[i];
     }
 
     int count_initials = 1;
@@ -79,32 +76,32 @@ void high_score_update(int framenum) {
 		switch_state(STATE_MAIN_MENU, 0);
 	}
 
-    if((pushed_buttons & 0b0100) & (previous_state == STATE_LEVEL)){
+    if(pushed_buttons & 0b0100){
         if(letter_count == 0){
             letter_count = 26;
-            hiscore[in_count] = hiscore[in_count] + letter_count;
+            hiscore[in_count] = 0x41 + letter_count;
         }
 
         else{
             letter_count--;
-            hiscore[in_count] = hiscore[in_count] + letter_count;
+            hiscore[in_count] = 0x41 + letter_count;
         }
     }
 
-    if((pushed_buttons & 0b0010) & (previous_state == STATE_LEVEL)){
+    if(pushed_buttons & 0b0010){
         if(letter_count == 26){
             letter_count = 0;
-            hiscore[in_count] = hiscore[in_count] + letter_count;
+            hiscore[in_count] = 0x41 + letter_count;
             }
         else{
             letter_count++;
-            hiscore[in_count] = hiscore[in_count] + letter_count;
+            hiscore[in_count] = 0x41 + letter_count;
             }
     }
 
-    if((pushed_buttons & 0b0001) & (previous_state == STATE_LEVEL)){
+    if(pushed_buttons & 0b0001){
         if(in_count != 2){
-            in_count ++;
+            in_count++;
             letter_count = 0;
         }
         else{
@@ -178,14 +175,23 @@ bool is_top_4(int score){
  * and saves the new high score to the EEPROM.  *
  ************************************************/
 void high_score_put_n_save(int data[]){
-    int count = 0;
-    for(int i = 4; i < 17; i = i + 4){
-        if(data_array[i] < data[3]){
-            for(int j = 0; j <= 3; j--){
-                data_array[i-j] = data[3-j];
-            }
+    if(hiscore_index == -1){
+        for(int i = 4; i < 17; i = i + 4){
+            if(data_array[i] < data[3]){
+                for(int j = 0; j <= 3; j++){
+                    data_array[i-j] = data[3-j];
+                }
+                hiscore_index = i;
+                break;
 
+            }
         }
+    }
+
+    else{
+        for(int j = 0; j <= 3; j++){
+                    data_array[hiscore_index-j] = data[3-j];
+                }
     }
 
     /* Saves to EEPROM */

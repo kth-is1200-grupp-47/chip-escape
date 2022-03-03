@@ -8,152 +8,61 @@
  * Initializes the I2C1 bus for transfer or read     *
  * Written by Botan Botani                           *
  ****************************************************/
-void init_i2c(){
 
-    /* Clear I2C1 bus */
 
-    I2C1CON = 0;
-    I2C1STAT = 0;
-
-    /* Testing baud rate */
-    I2C1BRG = 0x0C2;
-
-    /* Start I2C1 (bit 15) and stop it in idle mode (bit 13) */
-    I2C1CONSET = 0xA000;
+/* Wait for I2C bus to become idle */
+void i2c_idle() {
+	while(I2C1CON & 0x1F || I2C1STAT & (1 << 14)); //TRSTAT
 }
 
-/*******************************************************
- * This function runs until the I2C bus is ready for   *
- * transfer or receiving.                              *
- * Written by Botan Botani                             *
- ******************************************************/
-
-void ready_i2c(){
-    /*********************************************************************************
-     * I2CxCON - bit 5 == 0: ACK sent. bit 4 == 0: Acknowledge sequence idle         *
-     * bit 3 == 0: Receive sequence not in progress. bit 2 == 0: Stop condition idle *
-     * bit 1 == 0: Restart condition idle. bit 0 == 0: start condition idle.         *
-     * I2CxSTAT - bit 14: Master transmit is not in progress.                        *
-     ********************************************************************************/
-    while(I2C1CON & 0x1F || I2C1STAT & 0x4000);
+/* Send one byte on I2C bus, return ack/nack status of transaction */
+bool i2c_send(uint8_t data) {
+	i2c_idle();
+	I2C1TRN = data;
+	i2c_idle();
+	return !(I2C1STAT & (1 << 15)); //ACKSTAT
 }
 
-/**************************************************************
- * This function transfers 1 byte to the EEPROM with address  *
- * 1010000.                                                   *
- * Parameter: byte                                            *
- * Written by Botan Botani                                    *
- *************************************************************/
-
-void transfer_i2c(uint8_t byte){
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Send start condition (bit 0)*/
-    I2C1CONSET = 0x1;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /******************************************************** 
-     * Transfer device address (7 bits) + Write command (0) * 
-     * Wait for acknowledge.                                *
-    *********************************************************/
-    while(!(I2C1STAT & 0x8000)){
-        I2C1TRN = 10100000;
-    }
-    
-     /* Send address high byte */
-    I2C1TRN = 0x0;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Send address low byte */
-    I2C1TRN = 0x0;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Store the byte in the i2CxTRN register */
-    I2C1TRN = byte;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-    
-
-    /* Stop the bus */
-    I2C1CONSET = 0x4;
-
+/* Receive one byte from I2C bus */
+uint8_t i2c_recv() {
+	i2c_idle();
+	I2C1CONSET = 1 << 3; //RCEN = 1
+	i2c_idle();
+	I2C1STATCLR = 1 << 6; //I2COV = 0
+	return I2C1RCV;
 }
 
+/* Send acknowledge conditon on the bus */
+void i2c_ack() {
+	i2c_idle();
+	I2C1CONCLR = 1 << 5; //ACKDT = 0
+	I2C1CONSET = 1 << 4; //ACKEN = 1
+}
 
-/**************************************************************
- * This function receives 1 byte from the EEPROM with address *
- * 1010000.                                                   *
- * Parameter: Address                                         *
- * Written by Botan Botani                                    *
- *************************************************************/
+/* Send not-acknowledge conditon on the bus */
+void i2c_nack() {
+	i2c_idle();
+	I2C1CONSET = 1 << 5; //ACKDT = 1
+	I2C1CONSET = 1 << 4; //ACKEN = 1
+}
 
-uint8_t receive_i2c(uint8_t address){
+/* Send start conditon on the bus */
+void i2c_start() {
+	i2c_idle();
+	I2C1CONSET = 1 << 0; //SEN
+	i2c_idle();
+}
 
-    /* Wait for the bus to be ready */
-    ready_i2c();
+/* Send restart conditon on the bus */
+void i2c_restart() {
+	i2c_idle();
+	I2C1CONSET = 1 << 1; //RSEN
+	i2c_idle();
+}
 
-    /* Send start condition (bit 0)*/
-    I2C1CONSET = 0x1;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /******************************************************** 
-     * Transfer device address (7 bits) + Write command (0) * 
-     * Wait for acknowledge.                                *
-    *********************************************************/
-    while(!(I2C1STAT & 0x8000)){
-        I2C1TRN = 10100000;
-    }
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Send address high byte */
-    I2C1TRN = 0x0;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Send address low byte */
-    I2C1TRN = 0x0;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Send start condition (bit 0) and receive enable (bit 3) */
-    I2C1CONSET = 0x9;
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /******************************************************** 
-     * Transfer device address (7 bits) + Read command (1)  * 
-     * Wait for acknowledge.                                *
-    *********************************************************/
-    while(!(I2C1STAT & 0x8000)){
-        I2C1TRN = 10100001;
-    }
-
-    /* Wait for the bus to be ready */
-    ready_i2c();
-
-    /* Clear overflow bit (bit 6) */
-    I2C1STATCLR = 0x40;
-    
-    uint8_t received = I2C1RCV;
-
-    /* Stop the bus */
-    I2C1CONSET = 0x4;
-
-    return received;
+/* Send stop conditon on the bus */
+void i2c_stop() {
+	i2c_idle();
+	I2C1CONSET = 1 << 2; //PEN
+	i2c_idle();
 }

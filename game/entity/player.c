@@ -1,10 +1,12 @@
 #include "game/camera.h"
 #include "game/entity.h"
+#include "game/difficulty.h"
 
 #include "hw/display.h"
 #include "hw/inputs.h"
 
 USE_IMAGE(player);
+USE_IMAGE(icons);
 
 /* From level.c */
 extern Level current_level;
@@ -29,6 +31,11 @@ typedef struct {
 	uint8_t animation_frame;
 	/* Frames since player started jumping */
 	uint8_t jump_frames;
+
+	/* Amount of lives left */
+	uint8_t lives_left;
+	/* Amount of points player has collected */
+	uint32_t points;
 } PlayerData;
 
 /* Only one player can exist at a time, so we don't need to allocate more */
@@ -42,6 +49,7 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 	/* Initialize new player data */
 	memset(&pdata, 0, sizeof(PlayerData));
 	pdata.direction = DIRECTION_RIGHT;
+	pdata.lives_left = difficulty_life_count[current_difficulty];
 
 	self->data = (uint32_t)&pdata;
 }
@@ -119,4 +127,13 @@ void entity_player_draw(Entity* self) {
 
 	int ry = data->direction == DIRECTION_LEFT ? 11 : 0;
 	display_draw_image_region(image_player, self->x - camera_offset_x, self->y - camera_offset_y, rx, ry, 8, 11, OP_OVERLAY);
+
+	/* HUD */
+	display_draw_image_region(image_icons, 0, 1, 0, 0, 7, 6, OP_OVERLAY);
+	char lives[] = { '0' + data->lives_left, '\0' };
+	display_draw_text(lives, 8, 0, OP_OVERLAY);
+
+	char buffer[16];
+	sprintf(buffer, "%uP", data->points);
+	display_draw_text(buffer, 20, 0, OP_OVERLAY);
 }

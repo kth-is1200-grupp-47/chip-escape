@@ -13,14 +13,14 @@
 
 #include "game/state.h"
 
+USE_LEVEL(level1);
+
 /* The amount of time a frame must take to keep a consistent frame rate. */
 #define MIN_FRAME_TIME 16
 
 int main() {
 	/* Initialize the Serial Peripheral Interface, for communicating with display. */
 	spi_init();
-	/* Init EEPROM I2C. */
-	init_i2c();
 
 	/* Initialize interrupts and timer. */
 	timer_init();

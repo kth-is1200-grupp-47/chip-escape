@@ -5,13 +5,23 @@
 
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef EEPROM_H
 #define EEPROM_H
 
-void init_i2c();
+/*void init_i2c();
 void transfer_i2c(uint8_t byte);
-uint8_t receive_i2c(uint8_t address);
+uint8_t receive_i2c(uint8_t address);*/
+
+void i2c_idle();
+bool i2c_send(uint8_t data);
+uint8_t i2c_recv();
+void i2c_ack();
+void i2c_nack();
+void i2c_start();
+void i2c_restart();
+void i2c_stop();
 
 
 
