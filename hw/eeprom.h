@@ -10,9 +10,9 @@
 #ifndef EEPROM_H
 #define EEPROM_H
 
-/*void init_i2c();
-void transfer_i2c(uint8_t byte);
-uint8_t receive_i2c(uint8_t address);*/
+void init_i2c();
+void transfer_i2c(uint8_t byte, int index);
+int receive_i2c(int index);
 
 void i2c_idle();
 bool i2c_send(uint8_t data);

@@ -14,6 +14,7 @@ int selected_option;
 /* Animation for arrows */
 int left_arrow_offset;
 int right_arrow_offset;
+int eeprom;
 
 void main_menu_load() {
 	selected_option = 0;

@@ -10,7 +10,9 @@
 /* Array for initials and scores */
 char initials[13];
 int scores[4];
-int data_array[] = {0, 0x41, 0x42, 0x4b, 0, 0x43, 0x44, 0x4c, 1, 0x45, 0x46, 0x4d, 2, 0x47, 0x48, 0x4e, 3};
+
+int data_array[] = {0, 0x41, 0x42, 0x4b, 50, 0x43, 0x44, 0x4c, 40, 0x45, 0x46, 0x4d, 30, 0x47, 0x48, 0x4e, 3};
+//int data_array[17];
 
 /* Count for characters from A -> Z */
 int in_count = 0;
@@ -18,7 +20,7 @@ int in_count = 0;
 /* Count for letters in inputting high score */
 int letter_count = 0;
 
-/* Variable for high score */
+/* Variable for current high score */
 int hiscore[] = {0x41, 0x41, 0x41, 0};
 
 /* Variable of where to put high score */
@@ -30,13 +32,10 @@ char hex2char(int hex){
     return ch;
 }
 
-/***********************************************************************
- * This function initializes the high score list.                      *
- * It takes the data read from the EEPROM: three initials and a score  *
- * and puts them in an array.                                          *
- ***********************************************************************/
+void high_score_put_n_save(int data[]);
+
 void high_score_load(int data){
-    previous_state = STATE_LEVEL;
+
     hiscore[3] = data;
 
     if(previous_state == STATE_LEVEL){
@@ -50,6 +49,7 @@ void high_score_load(int data){
     int count_initials = 1;
     int count_scores = 0;
 
+    /* This section adds score and initials to separate arrays */
     /* data begins with a 0 element */
     for(int i = 1; i < 17; i++){
 
@@ -70,9 +70,9 @@ void high_score_load(int data){
 }
 
 void high_score_update(int framenum) {
-    if(input_get_btns_pressed() & BUTTON_MENU_UP){
+    if(input_get_btns_pressed() & BUTTON_LEFT){
         if(letter_count == 0){
-            letter_count = 26;
+            letter_count = 25;
             hiscore[in_count] = 0x41 + letter_count;
         }
 
@@ -82,8 +82,8 @@ void high_score_update(int framenum) {
         }
     }
 
-    if(input_get_btns_pressed() & BUTTON_MENU_DOWN){
-        if(letter_count == 26){
+    if(input_get_btns_pressed() & BUTTON_RIGHT){
+        if(letter_count == 25){
             letter_count = 0;
             hiscore[in_count] = 0x41 + letter_count;
             }
@@ -94,12 +94,13 @@ void high_score_update(int framenum) {
     }
 
     if(input_get_btns_pressed() & BUTTON_ACTION){
-        if(in_count != 2){
+        if(in_count != 2 && previous_state == STATE_LEVEL){
             in_count++;
             letter_count = 0;
         }
         else{
-            high_score_put_n_save(hiscore);
+			if(previous_state == STATE_LEVEL)
+            	high_score_put_n_save(hiscore);
             switch_state(STATE_MAIN_MENU, 0);
         }
 
@@ -112,7 +113,7 @@ void line_draw(){
     int ic = 1;
 
     for(int i = 0; i < 4; i++){
-        char scoredraw[10];
+        char scoredraw[20];
         sprintf(scoredraw, "%c%c%c - %d", initials[ic], initials[ic+1], initials[ic+2], scores[i]);
 
         display_draw_text(scoredraw, 5, (i*FONT_CHAR_HEIGHT), 0);
@@ -131,6 +132,7 @@ void high_score_draw() {
         case STATE_MAIN_MENU: {
             /* Draws the high scores */
             line_draw();
+			break;
 		}
 
         case STATE_LEVEL:{
@@ -143,7 +145,7 @@ void high_score_draw() {
             sprintf(inputdraw, "%c%c%c - %d", hex2char(hiscore[0]), hex2char(hiscore[1]), hex2char(hiscore[2]), hiscore[3]);
 
             display_draw_text(inputdraw, 60, (3*FONT_CHAR_HEIGHT), 0);
-
+			break;
 
         }
     }
@@ -169,28 +171,46 @@ bool is_top_4(int score){
  * and saves the new high score to the EEPROM.  *
  ************************************************/
 void high_score_put_n_save(int data[]){
-    if(hiscore_index == -1){
-        for(int i = 4; i < 17; i = i + 4){
-            if(data_array[i] < data[3]){
-                for(int j = 0; j <= 3; j++){
-                    data_array[i-j] = data[3-j];
-                }
-                hiscore_index = i;
-                break;
+    int temp_array[17];
 
+    if(hiscore_index == -1){
+        /* Finds high score index */
+        for(int i = 4; i < 17; i = i + 4){
+                    hiscore_index = i;
+                    break;
+                }
+
+        /* Put it where it should be */
+        for(int i = 4; i < 17; i = i +4){
+            if(i < hiscore_index){
+                for(int j = 0; j <= 3; j++){
+                    temp_array[i-j] = data_array[i-j];
+                }
+            }
+            else if(i == hiscore_index){
+                for(int j = 0; j <= 3; j++){
+                    temp_array[i-j] = data[3-j];
+                }
+            }
+
+            else if(i > hiscore_index){
+                for(int j = 0; j <= 3; j++){
+                    temp_array[i-j] = data_array[(i-4)-j];
+                }
             }
         }
-    }
 
-    else{
-        for(int j = 0; j <= 3; j++){
+        for(int i = 0; i < 17; i++){
+            data_array[i] = temp_array[i];
+        }
+        }
+
+        else{
+            for(int j = 0; j <= 3; j++){
                     data_array[hiscore_index-j] = data[3-j];
                 }
-    }
+        }
 
-    /* Saves to EEPROM */
-    /*
-    for(int i = 0; i < 17; i++){
-        transfer_i2c(data_array[i]);
-    } */
+
 }
+
