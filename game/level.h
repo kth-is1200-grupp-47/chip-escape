@@ -23,6 +23,8 @@ typedef uint8_t LevelTile;
 #define TILE_ID_HAZARD 3
 /* Upper bits: Amount of bits */
 #define TILE_ID_BITS 4
+/* Upper bits: Ignored */
+#define TILE_ID_METAL_BLOCK 5
 /* Indicates that player should spawn at this position */
 #define TILE_ID_PLAYER 15
 
@@ -42,7 +44,7 @@ static inline uint8_t level_extract_tile_data(LevelTile tile) {
 }
 
 /* All tiles that players/enemies can collide with */
-static uint8_t solid_tiles[] = { TILE_ID_GROUND };
+static uint8_t solid_tiles[] = { TILE_ID_GROUND, TILE_ID_METAL_BLOCK };
 
 /* All tiles that players/enemies dies when collided with */
 static uint8_t dangerous_tiles[] = { TILE_ID_HAZARD };

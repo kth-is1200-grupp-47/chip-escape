@@ -169,6 +169,11 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				break;
 			}
 
+			/* Metal Block */
+			case 0x808080ff:
+				*output = TILE_ID_METAL_BLOCK;
+				break;
+
 			default:
 				printf("builder_image: Unknown tile type 0x%x at %d %d\n", color, x, y);
 				exit(1);

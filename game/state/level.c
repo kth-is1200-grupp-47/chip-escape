@@ -46,6 +46,7 @@ void level_update(int framenum) {
 
 USE_IMAGE(tile_ground);
 USE_IMAGE(tile_hazard);
+USE_IMAGE(tile_metal);
 
 /* Draw tiles at specified position */
 void draw_tile(LevelTile tile, int x, int y) {
@@ -72,6 +73,10 @@ void draw_tile(LevelTile tile, int x, int y) {
 			display_draw_image_region(image_tile_hazard, x, y, offset_x * TILE_SIZE, offset_y * TILE_SIZE, 8, 8, 0);
 			break;
 		}
+
+		case TILE_ID_METAL_BLOCK:
+			display_draw_image(image_tile_metal, x, y, 0);
+			break;
 	}
 }
 
