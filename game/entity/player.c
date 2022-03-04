@@ -16,9 +16,6 @@ extern Level current_level;
 USE_IMAGE(player);
 USE_IMAGE(icons);
 
-#define DIRECTION_LEFT 2
-#define DIRECTION_RIGHT 1
-
 /* 0.12 */
 #define GRAVITY 12
 
@@ -107,6 +104,18 @@ void entity_player_update(Entity* self, int framenum) {
 	/* Air resistance */
 	if(data->speed_y > 200) {
 		data->speed_y = 200;
+	}
+
+	/* Check collision around player when standing still so enemies can still kill */
+	if(data->speed_x > -1) {
+		for(int y = self->y; y < self->y + ENTITY_PLAYER_HEIGHT; y++) {
+			entity_try_collide_all(self, self->x, y);
+		}
+	}
+	if(data->speed_x < 1) {
+		for(int y = self->y; y < self->y + ENTITY_PLAYER_HEIGHT; y++) {
+			entity_try_collide_all(self, self->x + ENTITY_PLAYER_WIDTH - 1, y);
+		}
 	}
 
 	entity_move(self, &data->speed_x, &data->speed_y, &data->speed_rx, &data->speed_ry, true);
@@ -203,6 +212,7 @@ void entity_player_kill(Entity* self) {
 	/* If the player can't revive we save their points in the highscore table */
 	if(!can_revive) {
 		switch_state(STATE_HIGHSCORE_LIST, (const void*)data->points);
+		pdata.coming_from_previous_level = false;
 		return;
 	}
 
@@ -244,7 +254,7 @@ void entity_player_touched_flag(Entity* self) {
 	assert(next_level != NULL || won_game);
 
 	if(won_game) {
-		switch_state(STATE_HIGHSCORE_LIST, pdata.points);
+		switch_state(STATE_HIGHSCORE_LIST, (const void*)pdata.points);
 	}
 	else {
 		switch_state(STATE_LEVEL, next_level);

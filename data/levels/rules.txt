@@ -21,3 +21,5 @@ Hazard (Spikes)   000 128 255
 Metal Block       128 128 128
 
 Finish Flag       255 000 255
+
+Electricity       000 255 255

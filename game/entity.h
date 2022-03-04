@@ -27,11 +27,21 @@ typedef uint8_t EntityType;
 /* Bits that player can collect */
 #define ENTITY_TYPE_BITS 3
 
+/* Moving electricity that kills the player */
+#define ENTITY_TYPE_ELECTRICITY 4
+/* Slime that jumps periodically */
+#define ENTITY_TYPE_SLIME 5
+/* Robot that follows the player */
+#define ENTITY_TYPE_ROBOT 6
+
 /* Entity is dead (skip) */
 #define ENTITY_KILLED 255
 
 #define ENTITY_PLAYER_WIDTH 8
 #define ENTITY_PLAYER_HEIGHT 11
+
+#define DIRECTION_LEFT 2
+#define DIRECTION_RIGHT 1
 
 typedef struct {
 	/* Entity type */
@@ -53,6 +63,12 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 /* Spawn a new ENTITY_TYPE_BITS */
 void entity_bits_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
+/* Spawn a new ENTITY_TYPE_ELECTRICITY */
+void entity_electricity_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
+/* Spawn a new ENTITY_TYPE_SLIME */
+void entity_slime_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
+/* Spawn a new ENTITY_TYPE_ROBOT */
+void entity_robot_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 
 /* Update all entities in array */
 void entity_update_all(int framenum);
@@ -84,6 +100,27 @@ void entity_bits_update(Entity* self, int framenum);
 void entity_bits_draw(Entity* self);
 /* Try collide ENTITY_TYPE_BITS */
 bool entity_bits_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
+
+/* Update ENTITY_TYPE_ELECTRICITY */
+void entity_electricity_update(Entity* self, int framenum);
+/* Draw ENTITY_TYPE_ELECTRICITY */
+void entity_electricity_draw(Entity* self);
+/* Try collide ENTITY_TYPE_ELECTRICITY */
+bool entity_electricity_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
+
+/* Update ENTITY_TYPE_SLIME */
+void entity_slime_update(Entity* self, int framenum);
+/* Draw ENTITY_TYPE_SLIME */
+void entity_slime_draw(Entity* self);
+/* Try collide ENTITY_TYPE_SLIME */
+bool entity_slime_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
+
+/* Update ENTITY_TYPE_ROBOT */
+void entity_robot_update(Entity* self, int framenum);
+/* Draw ENTITY_TYPE_ROBOT */
+void entity_robot_draw(Entity* self);
+/* Try collide ENTITY_TYPE_ROBOT */
+bool entity_robot_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
 
 /* Moves entity mx/my pixels. mx/my are divided by 100 to allow for more precision. */
 void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collision);

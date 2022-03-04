@@ -27,6 +27,9 @@ void entity_load_from_level_tiles(Level level, Entity* array_start) {
 				spawn_entity(TILE_ID_PLAYER, ENTITY_TYPE_PLAYER, entity_player_spawn);
 				spawn_entity(TILE_ID_PLATFORM, ENTITY_TYPE_PLATFORM, entity_platform_spawn);
 				spawn_entity(TILE_ID_BITS, ENTITY_TYPE_BITS, entity_bits_spawn);
+				spawn_entity(TILE_ID_ENEMY_ELECTRICITY, ENTITY_TYPE_ELECTRICITY, entity_electricity_spawn);
+				spawn_entity(TILE_ID_ENEMY_SLIME, ENTITY_TYPE_SLIME, entity_slime_spawn);
+				spawn_entity(TILE_ID_ENEMY_ROBOT, ENTITY_TYPE_ROBOT, entity_robot_spawn);
 			}
 
 			/* Ensure we don't spawn too many entities */
@@ -48,6 +51,9 @@ void entity_update_all(int framenum) {
 			update_entity(ENTITY_TYPE_PLAYER, entity_player_update);
 			update_entity(ENTITY_TYPE_PLATFORM, entity_platform_update);
 			update_entity(ENTITY_TYPE_BITS, entity_bits_update);
+			update_entity(ENTITY_TYPE_ELECTRICITY, entity_electricity_update);
+			update_entity(ENTITY_TYPE_SLIME, entity_slime_update);
+			update_entity(ENTITY_TYPE_ROBOT, entity_robot_update);
 		}
 
 		current_entity++;
@@ -67,6 +73,9 @@ void entity_draw_all() {
 			draw_entity(ENTITY_TYPE_PLAYER, entity_player_draw);
 			draw_entity(ENTITY_TYPE_PLATFORM, entity_platform_draw);
 			draw_entity(ENTITY_TYPE_BITS, entity_bits_draw);
+			draw_entity(ENTITY_TYPE_ELECTRICITY, entity_electricity_draw);
+			draw_entity(ENTITY_TYPE_SLIME, entity_slime_draw);
+			draw_entity(ENTITY_TYPE_ROBOT, entity_robot_draw);
 		}
 
 		current_entity++;
@@ -85,6 +94,9 @@ bool entity_try_collide_all(Entity* colliding_entity, int x, int y) {
 		switch(current_entity->type) {
 			try_collide_entity(ENTITY_TYPE_PLATFORM, entity_platform_try_collide);
 			try_collide_entity(ENTITY_TYPE_BITS, entity_bits_try_collide);
+			try_collide_entity(ENTITY_TYPE_ELECTRICITY, entity_electricity_try_collide);
+			try_collide_entity(ENTITY_TYPE_SLIME, entity_slime_try_collide);
+			try_collide_entity(ENTITY_TYPE_ROBOT, entity_robot_try_collide);
 		}
 
 		current_entity++;
@@ -101,7 +113,9 @@ bool entity_try_collide_all(Entity* colliding_entity, int x, int y) {
 
 	for(int i = 0; i < sizeof(dangerous_tiles); i++) {
 		if(tile_id == dangerous_tiles[i]) {
-			entity_kill(colliding_entity);
+			if(colliding_entity->type == ENTITY_TYPE_PLAYER) {
+				entity_kill(colliding_entity);
+			}
 			return true;
 		}
 	}

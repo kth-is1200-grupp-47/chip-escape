@@ -27,6 +27,12 @@ typedef uint8_t LevelTile;
 #define TILE_ID_METAL_BLOCK 5
 /* Upper bits: 1 if lower part */
 #define TILE_ID_FLAG 6
+/* Upper bits: Ignored */
+#define TILE_ID_ENEMY_ELECTRICITY 7
+/* Upper bits: Ignored */
+#define TILE_ID_ENEMY_SLIME 8
+/* Upper bits: Ignored */
+#define TILE_ID_ENEMY_ROBOT 9
 /* Indicates that player should spawn at this position */
 #define TILE_ID_PLAYER 15
 
