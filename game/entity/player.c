@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "game/camera.h"
 #include "game/entity.h"
 #include "game/difficulty.h"
@@ -26,37 +28,54 @@ PlayerData pdata;
 void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata) {
 	/* Spawn player on top of tile */
 	self->x = (tilex * TILE_SIZE) + TILE_SIZE / 2 - ENTITY_PLAYER_WIDTH / 2;
-	self->y = (tiley * TILE_SIZE) + TILE_SIZE / 2 - ENTITY_PLAYER_HEIGHT;
+	self->y = (tiley * TILE_SIZE) - ENTITY_PLAYER_HEIGHT;
 
 	/* Initialize new player data */
 	pdata.direction = DIRECTION_RIGHT;
-	pdata.lives_left = difficulty_life_count[current_difficulty];
 
+	pdata.speed_x = 0;
+	pdata.speed_y = 0;
+	pdata.speed_rx = 0;
+	pdata.speed_ry = 0;
+
+	pdata.on_ground = true;
+	pdata.animation_frame = 0;
+	pdata.jump_frames = 0;
+
+	if(!pdata.coming_from_previous_level) {
+		pdata.points = 0;
+		pdata.lives_left = difficulty_life_count[current_difficulty];
+	}
+
+	pdata.coming_from_previous_level = false;
 	self->data = (uint32_t)&pdata;
 }
 
 void entity_player_update(Entity* self, int framenum) {
 	PlayerData* data = (PlayerData*)self->data;
 
-	if(input_get_btns() & BUTTON_LEFT) {
-		data->speed_x = -100;
-		data->direction = DIRECTION_LEFT;
-		data->animation_frame++;
-	}
-	else if(input_get_btns() & BUTTON_RIGHT) {
-		data->speed_x = 100;
-		data->direction = DIRECTION_RIGHT;
-		data->animation_frame++;
-	}
-	else {
-		data->animation_frame = 0;
-
-		/* Reduce speed slowly. Max speed must be divisible by this value. */
-		if(data->speed_x > 0) {
-			data->speed_x -= 20;
+	/* Stop player from moving for first half second when switching states */
+	if(framenum > 30) {
+		if(input_get_btns() & BUTTON_LEFT) {
+			data->speed_x = -100;
+			data->direction = DIRECTION_LEFT;
+			data->animation_frame++;
 		}
-		else if(data->speed_x < 0) {
-			data->speed_x += 20;
+		else if(input_get_btns() & BUTTON_RIGHT) {
+			data->speed_x = 100;
+			data->direction = DIRECTION_RIGHT;
+			data->animation_frame++;
+		}
+		else {
+			data->animation_frame = 0;
+
+			/* Reduce speed slowly. Max speed must be divisible by this value. */
+			if(data->speed_x > 0) {
+				data->speed_x -= 20;
+			}
+			else if(data->speed_x < 0) {
+				data->speed_x += 20;
+			}
 		}
 	}
 
@@ -151,8 +170,8 @@ void entity_player_draw(Entity* self) {
 void entity_player_kill(Entity* self) {
 	PlayerData* data = (PlayerData*)self->data;
 
-	bool can_revive = data->lives_left > 1;
-	int new_lives_left = --data->lives_left;
+	data->coming_from_previous_level = true;
+	bool can_revive = data->lives_left-- > 1;
 	/* Lose 5% pts when dying */
 	data->points -= data->points / 20;
 
@@ -198,6 +217,36 @@ void entity_player_kill(Entity* self) {
 			}
 		}
 	}
+}
 
-	data->lives_left = new_lives_left;
+USE_LEVEL(level1);
+USE_LEVEL(level2);
+USE_LEVEL(level3);
+
+void entity_player_touched_flag(Entity* self) {
+	pdata.coming_from_previous_level = true;
+	/* Give player points for completing level */
+	pdata.points += 1000 + 500 * (current_difficulty - DIFFICULTY_EASY);
+
+	Level next_level = NULL;
+	bool won_game = false;
+
+	if(current_level == level_level1) {
+		next_level = level_level2;
+	}
+	else if(current_level == level_level2) {
+		next_level = level_level3;
+	}
+	else if(current_level == level_level3) {
+		won_game = true;
+	}
+
+	assert(next_level != NULL || won_game);
+
+	if(won_game) {
+		switch_state(STATE_HIGHSCORE_LIST, pdata.points);
+	}
+	else {
+		switch_state(STATE_LEVEL, next_level);
+	}
 }

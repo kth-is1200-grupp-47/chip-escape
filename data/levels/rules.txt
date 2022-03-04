@@ -19,3 +19,5 @@ Hazard (Spikes)   000 128 255
 4 bits (40-80 p)  255 255 000
 
 Metal Block       128 128 128
+
+Finish Flag       255 000 255

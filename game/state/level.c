@@ -12,15 +12,12 @@
 
 /* Level we're playing right now */
 Level current_level;
-/* Pointer to player entity */
-Entity* player_entity;
 
 void level_load(Level data) {
 	current_level = data;
 
 	/* Reset and load entities */
 	memset(entities, 0, (MAX_ENTITIES + 1) * sizeof(Entity));
-	player_entity = NULL;
 	entity_load_from_level_tiles(data, entities);
 
 	/* Find the player */
@@ -28,15 +25,14 @@ void level_load(Level data) {
 
 	while(current_entity->type != ENTITY_TYPE_NONE) {
 		if(current_entity->type == ENTITY_TYPE_PLAYER) {
-			player_entity = current_entity;
 			break;
 		}
 
 		current_entity++;
 	}
 
-	assert(player_entity != NULL);
-	camera_reset(player_entity);
+	assert(current_entity != &entities[MAX_ENTITIES]);
+	camera_reset(current_entity);
 }
 
 void level_update(int framenum) {
@@ -47,6 +43,7 @@ void level_update(int framenum) {
 USE_IMAGE(tile_ground);
 USE_IMAGE(tile_hazard);
 USE_IMAGE(tile_metal);
+USE_IMAGE(tile_flag);
 
 /* Draw tiles at specified position */
 void draw_tile(LevelTile tile, int x, int y) {
@@ -76,6 +73,10 @@ void draw_tile(LevelTile tile, int x, int y) {
 
 		case TILE_ID_METAL_BLOCK:
 			display_draw_image(image_tile_metal, x, y, 0);
+			break;
+
+		case TILE_ID_FLAG:
+			display_draw_image_region(image_tile_flag, x, y, 0, level_extract_tile_data(tile) ? 8 : 0, 8, 8, OP_OVERLAY);
 			break;
 	}
 }

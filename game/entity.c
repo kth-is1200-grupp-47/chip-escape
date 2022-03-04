@@ -106,6 +106,11 @@ bool entity_try_collide_all(Entity* colliding_entity, int x, int y) {
 		}
 	}
 
+	/* If player touched lower part of flag */
+	if(colliding_entity->type == ENTITY_TYPE_PLAYER && tile_id == TILE_ID_FLAG && level_extract_tile_data(tile_at_xy)) {
+		entity_player_touched_flag(colliding_entity);
+	}
+
 	return false;
 }
 

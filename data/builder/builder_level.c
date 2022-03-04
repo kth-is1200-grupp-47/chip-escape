@@ -174,6 +174,14 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				*output = TILE_ID_METAL_BLOCK;
 				break;
 
+			case 0xff00ffff:
+				*output = TILE_ID_FLAG;
+				/* This is the lower part of the flag */
+				if(get_image_color_at(input, x, y - 1, iw, ih) == color) {
+					*output |= 1 << 4;
+				}
+				break;
+
 			default:
 				printf("builder_image: Unknown tile type 0x%x at %d %d\n", color, x, y);
 				exit(1);

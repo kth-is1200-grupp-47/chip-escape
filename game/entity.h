@@ -68,6 +68,8 @@ void entity_player_update(Entity* self, int framenum);
 void entity_player_draw(Entity* self);
 /* When ENTITY_TYPE_PLAYER is killed */
 void entity_player_kill(Entity* self);
+/* Level completed */
+void entity_player_touched_flag(Entity* self);
 
 /* Update ENTITY_TYPE_PLATFORM */
 void entity_platform_update(Entity* self, int framenum);

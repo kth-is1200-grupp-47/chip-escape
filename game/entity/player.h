@@ -21,6 +21,9 @@ typedef struct {
 	uint8_t lives_left;
 	/* Amount of points player has collected */
 	uint32_t points;
+
+	/* If player is continuing from previous level */
+	bool coming_from_previous_level;
 } PlayerData;
 
 #endif
