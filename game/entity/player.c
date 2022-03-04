@@ -25,7 +25,7 @@ PlayerData pdata;
 void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata) {
 	/* Spawn player on top of tile */
 	self->x = (tilex * TILE_SIZE) + TILE_SIZE / 2 - ENTITY_PLAYER_WIDTH / 2;
-	self->y = (tiley * TILE_SIZE) - ENTITY_PLAYER_HEIGHT;
+	self->y = (tiley * TILE_SIZE) + TILE_SIZE - ENTITY_PLAYER_HEIGHT;
 
 	/* Initialize new player data */
 	pdata.direction = DIRECTION_RIGHT;
@@ -168,7 +168,7 @@ void draw_hud(Entity* self, DisplayOp effect) {
 
 	char buffer[16];
 	sprintf(buffer, "%uP", data->points);
-	display_draw_text(buffer, 20, 0, effect);
+	display_draw_text(buffer, 24, 0, effect);
 }
 
 void entity_player_draw(Entity* self) {
@@ -211,6 +211,7 @@ void entity_player_kill(Entity* self) {
 
 	/* If the player can't revive we save their points in the highscore table */
 	if(!can_revive) {
+		self->type = ENTITY_KILLED;
 		switch_state(STATE_HIGHSCORE_LIST, (const void*)data->points);
 		pdata.coming_from_previous_level = false;
 		return;

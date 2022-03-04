@@ -186,6 +186,10 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				*output = TILE_ID_ENEMY_ELECTRICITY;
 				break;
 
+			case 0xaaff00ff:
+				*output = TILE_ID_ENEMY_SLIME;
+				break;
+
 			default:
 				printf("builder_image: Unknown tile type 0x%x at %d %d\n", color, x, y);
 				exit(1);

@@ -39,6 +39,8 @@ typedef uint8_t EntityType;
 
 #define ENTITY_PLAYER_WIDTH 8
 #define ENTITY_PLAYER_HEIGHT 11
+#define ENTITY_SLIME_WIDTH 20
+#define ENTITY_SLIME_HEIGHT 10
 
 #define DIRECTION_LEFT 2
 #define DIRECTION_RIGHT 1

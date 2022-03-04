@@ -132,6 +132,8 @@ int entity_size_x(Entity* entity) {
 	switch(entity->type) {
 		case ENTITY_TYPE_PLAYER:
 			return ENTITY_PLAYER_WIDTH;
+		case ENTITY_TYPE_SLIME:
+			return ENTITY_SLIME_WIDTH;
 	}
 
 	return 0;
@@ -141,6 +143,8 @@ int entity_size_y(Entity* entity) {
 	switch(entity->type) {
 		case ENTITY_TYPE_PLAYER:
 			return ENTITY_PLAYER_HEIGHT;
+		case ENTITY_TYPE_SLIME:
+			return ENTITY_SLIME_HEIGHT;
 	}
 
 	return 0;
@@ -149,7 +153,7 @@ int entity_size_y(Entity* entity) {
 /* Returns false if entity was stopped */
 bool entity_step_x(Entity* entity, int dir, bool collision) {
 	if(collision) {
-		assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);
+		/*assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);*/
 
 		/* Check all pixels to left or right of entity */
 		int collidex = dir == -1 ? entity->x - 1 : entity->x + entity_size_x(entity);
@@ -168,7 +172,7 @@ bool entity_step_x(Entity* entity, int dir, bool collision) {
 /* Returns false if entity was stopped */
 bool entity_step_y(Entity* entity, int dir, bool collision) {
 	if(collision) {
-		assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);
+		/*assert(entity_size_x(entity) != 0 && entity_size_y(entity) != 0);*/
 
 		/* Check all pixels above or below entity */
 		int collidey = dir == -1 ? entity->y - 1 : entity->y + entity_size_y(entity);

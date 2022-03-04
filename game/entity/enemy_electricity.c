@@ -51,7 +51,9 @@ void entity_electricity_update(Entity* self, int framenum) {
 
 void entity_electricity_draw(Entity* self) {
 	int frame = (electricity_animation_frame / 10) * 8;
-	display_draw_image_region(image_enemy_electricity, self->x - camera_offset_x, self->y - camera_offset_y, frame % 24, 0, 8, 8, OP_OVERLAY);
+	frame = frame % 24;
+
+	display_draw_image_region(image_enemy_electricity, self->x - camera_offset_x, self->y - camera_offset_y, frame, 0, 8, 8, OP_OVERLAY);
 }
 
 bool entity_electricity_try_collide(Entity* self, Entity* colliding_entity, int x, int y) {

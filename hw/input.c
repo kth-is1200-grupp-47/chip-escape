@@ -51,12 +51,10 @@ void input_chipkit_poll() {
 	}
 	if(portd_reg & (1 << 5)) {
 		buttons |= BUTTON_JUMP;
-		buttons |= BUTTON_MENU_UP;
 		buttons |= BUTTON_CHIPKIT2;
 	}
 	if(PORTF & (1 << 1)) {
 		buttons |= BUTTON_ACTION;
-		buttons |= BUTTON_MENU_DOWN;
 		buttons |= BUTTON_CHIPKIT1;
 	}
 }

@@ -16,19 +16,14 @@
 /* Button for other actions (ChipKIT = BTN1, NES = ???) */
 #define BUTTON_ACTION 8
 
-/* Button for going up in menu (ChipKIT = BTN2, NES = ???) */
-#define BUTTON_MENU_UP 16
-/* Button for going down in menu (ChipKIT = BTN1, NES = ???) */
-#define BUTTON_MENU_DOWN 32
-
 /* Button 1 on ChipKIT only */
-#define BUTTON_CHIPKIT1 64
+#define BUTTON_CHIPKIT1 16
 /* Button 2 on ChipKIT only */
-#define BUTTON_CHIPKIT2 128
+#define BUTTON_CHIPKIT2 32
 /* Button 3 on ChipKIT only */
-#define BUTTON_CHIPKIT3 256
+#define BUTTON_CHIPKIT3 64
 /* Button 4 on ChipKIT only */
-#define BUTTON_CHIPKIT4 512
+#define BUTTON_CHIPKIT4 128
 
 /* Runs at game start */
 void input_init();
