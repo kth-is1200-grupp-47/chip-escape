@@ -22,7 +22,10 @@ typedef uint8_t EntityType;
 #define ENTITY_TYPE_PLAYER 1
 
 /* Floating platform */
-#define ENTITY_TYPE_PLATFORM 100
+#define ENTITY_TYPE_PLATFORM 2
+
+/* Bits that player can collect */
+#define ENTITY_TYPE_BITS 3
 
 /* Entity is dead (skip) */
 #define ENTITY_KILLED 255
@@ -48,6 +51,8 @@ void entity_load_from_level_tiles(Level level, Entity* array_start);
 void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 /* Spawn a new ENTITY_TYPE_PLATFORM */
 void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
+/* Spawn a new ENTITY_TYPE_BITS */
+void entity_bits_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata);
 
 /* Update all entities in array */
 void entity_update_all(int framenum);
@@ -70,6 +75,13 @@ void entity_platform_update(Entity* self, int framenum);
 void entity_platform_draw(Entity* self);
 /* Try collide ENTITY_TYPE_PLATFORM */
 bool entity_platform_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
+
+/* Update ENTITY_TYPE_BITS */
+void entity_bits_update(Entity* self, int framenum);
+/* Draw ENTITY_TYPE_BITS */
+void entity_bits_draw(Entity* self);
+/* Try collide ENTITY_TYPE_BITS */
+bool entity_bits_try_collide(Entity* self, Entity* colliding_entity, int x, int y);
 
 /* Moves entity mx/my pixels. mx/my are divided by 100 to allow for more precision. */
 void entity_move(Entity* entity, int* mx, int* my, int* rx, int* ry, bool collision);

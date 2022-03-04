@@ -12,3 +12,8 @@ Falling Platform  000 128 000 (2 tiles = small platform, 3 tiles = big platform)
 
 Hazard (Chip)     000 000 255
 Hazard (Spikes)   000 128 255
+
+1 bit  (10-20 p)  135 135 000
+2 bits (20-40 p)  175 175 000
+3 bits (30-60 p)  215 215 000
+4 bits (40-80 p)  255 255 000

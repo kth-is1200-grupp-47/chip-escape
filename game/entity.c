@@ -26,6 +26,7 @@ void entity_load_from_level_tiles(Level level, Entity* array_start) {
 			switch(type) {
 				spawn_entity(TILE_ID_PLAYER, ENTITY_TYPE_PLAYER, entity_player_spawn);
 				spawn_entity(TILE_ID_PLATFORM, ENTITY_TYPE_PLATFORM, entity_platform_spawn);
+				spawn_entity(TILE_ID_BITS, ENTITY_TYPE_BITS, entity_bits_spawn);
 			}
 
 			/* Ensure we don't spawn too many entities */
@@ -46,6 +47,7 @@ void entity_update_all(int framenum) {
 		switch(current_entity->type) {
 			update_entity(ENTITY_TYPE_PLAYER, entity_player_update);
 			update_entity(ENTITY_TYPE_PLATFORM, entity_platform_update);
+			update_entity(ENTITY_TYPE_BITS, entity_bits_update);
 		}
 
 		current_entity++;
@@ -64,6 +66,7 @@ void entity_draw_all() {
 		switch(current_entity->type) {
 			draw_entity(ENTITY_TYPE_PLAYER, entity_player_draw);
 			draw_entity(ENTITY_TYPE_PLATFORM, entity_platform_draw);
+			draw_entity(ENTITY_TYPE_BITS, entity_bits_draw);
 		}
 
 		current_entity++;
@@ -81,6 +84,7 @@ bool entity_try_collide_all(Entity* colliding_entity, int x, int y) {
 	while(current_entity->type != ENTITY_TYPE_NONE) {
 		switch(current_entity->type) {
 			try_collide_entity(ENTITY_TYPE_PLATFORM, entity_platform_try_collide);
+			try_collide_entity(ENTITY_TYPE_BITS, entity_bits_try_collide);
 		}
 
 		current_entity++;

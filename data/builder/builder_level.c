@@ -153,6 +153,22 @@ void write_tile(uint8_t* input, uint8_t* output, uint32_t color, int x, int y, i
 				break;
 			}
 
+			/* Bits */
+			case 0x878700ff:
+			case 0xafaf00ff:
+			case 0xd7d700ff:
+			case 0xffff00ff: {
+				*output = TILE_ID_BITS;
+
+				uint8_t bit_count = 1;
+				if(color == 0xafaf00ff) { bit_count = 2; }
+				if(color == 0xd7d700ff) { bit_count = 3; }
+				if(color == 0xffff00ff) { bit_count = 4; }
+
+				*output |= bit_count << 4;
+				break;
+			}
+
 			default:
 				printf("builder_image: Unknown tile type 0x%x at %d %d\n", color, x, y);
 				exit(1);

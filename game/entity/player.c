@@ -2,6 +2,7 @@
 #include "game/entity.h"
 #include "game/difficulty.h"
 #include "game/state.h"
+#include "game/entity/player.h"
 
 #include "hw/display.h"
 #include "hw/input.h"
@@ -19,26 +20,6 @@ USE_IMAGE(icons);
 /* 0.12 */
 #define GRAVITY 12
 
-typedef struct {
-	/* Speed in both directions. Divide by 100 to get pixel value */
-	int speed_x, speed_y, speed_rx, speed_ry;
-
-	/* Direction player is facing. */
-	uint8_t direction;
-	/* If player is standing on the ground */
-	bool on_ground;
-
-	/* Walk animation frames */
-	uint8_t animation_frame;
-	/* Frames since player started jumping */
-	uint8_t jump_frames;
-
-	/* Amount of lives left */
-	uint8_t lives_left;
-	/* Amount of points player has collected */
-	uint32_t points;
-} PlayerData;
-
 /* Only one player can exist at a time, so we don't need to allocate more */
 PlayerData pdata;
 
@@ -48,7 +29,6 @@ void entity_player_spawn(Entity* self, int tilex, int tiley, LevelTile tiledata)
 	self->y = (tiley * TILE_SIZE) + TILE_SIZE / 2 - ENTITY_PLAYER_HEIGHT;
 
 	/* Initialize new player data */
-	memset(&pdata, 0, sizeof(PlayerData));
 	pdata.direction = DIRECTION_RIGHT;
 	pdata.lives_left = difficulty_life_count[current_difficulty];
 
@@ -152,7 +132,10 @@ void draw_hud(Entity* self, DisplayOp effect) {
 	PlayerData* data = (PlayerData*)self->data;
 
 	display_draw_image_region(image_icons, 0, 1, 0, 0, 7, 6, effect);
-	char lives[] = { '0' + data->lives_left, '\0' };
+
+	/* Draw life count (max 99) */
+	char lives[3];
+	sprintf(lives, "%d", data->lives_left);
 	display_draw_text(lives, 8, 0, effect);
 
 	char buffer[16];
@@ -170,6 +153,8 @@ void entity_player_kill(Entity* self) {
 
 	bool can_revive = data->lives_left > 1;
 	int new_lives_left = --data->lives_left;
+	/* Lose 5% pts when dying */
+	data->points -= data->points / 20;
 
 	/* Revive self */
 	self->type = ENTITY_TYPE_PLAYER;

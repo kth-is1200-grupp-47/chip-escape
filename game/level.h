@@ -21,8 +21,8 @@ typedef uint8_t LevelTile;
 #define TILE_ID_PLATFORM 2
 /* Upper bits: Offset in tile_hazard.png */
 #define TILE_ID_HAZARD 3
-/* Upper bits: Amount of coins */
-#define TILE_ID_COINS 4
+/* Upper bits: Amount of bits */
+#define TILE_ID_BITS 4
 /* Indicates that player should spawn at this position */
 #define TILE_ID_PLAYER 15
 
