@@ -14,7 +14,7 @@
 typedef uint8_t EntityType;
 
 /* Max entities in world */
-#define MAX_ENTITIES 64
+#define MAX_ENTITIES 128
 
 /* Not an entity */
 #define ENTITY_TYPE_NONE 0

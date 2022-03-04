@@ -5,13 +5,13 @@
 #include "data/macros.h"
 
 #include "hw/display.h"
-#include "hw/eeprom.h"
 #include "hw/input.h"
 #include "hw/interrupts.h"
 #include "hw/spi.h"
 #include "hw/timer.h"
 
 #include "game/state.h"
+#include "game/state/high_score.h"
 
 USE_LEVEL(level1);
 
@@ -31,6 +31,9 @@ int main() {
 
 	/* Initialize input devices. */
 	input_init();
+
+	/* Init high score table */
+	highscore_init();
 
 	/* All devices initialized so visual crashes can be enabled. */
 	debug_enable_visual_crashes();

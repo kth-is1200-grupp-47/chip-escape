@@ -24,7 +24,7 @@ void entity_slime_update(Entity* self, int framenum) {
 
 	/* Random jump timing */
 	if((framenum + self->x * 12 + self->y * 15) % (60 * 3) == 0) {
-		speed_y = -220;
+		speed_y = -250;
 	}
 
 	/* Always apply constant gravity */

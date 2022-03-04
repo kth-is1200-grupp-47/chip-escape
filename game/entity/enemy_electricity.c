@@ -23,7 +23,8 @@ void entity_electricity_update(Entity* self, int framenum) {
 
 	if(go_left) {
 		/* If we would fall when moving left change direction */
-		if(!entity_try_collide_all(self, self->x - 1, self->y + 9)) {
+		if(!entity_try_collide_all(self, self->x - 1, self->y + 9) ||
+			entity_try_collide_all(self, self->x - 1, self->y + 4)) {
 			self->data = 16 * 4;
 			self->data &= ~0x80000000;
 		}
@@ -36,7 +37,8 @@ void entity_electricity_update(Entity* self, int framenum) {
 	}
 	else {
 		/* If we would fall when moving right change direction */
-		if(!entity_try_collide_all(self, self->x + 8, self->y + 9)) {
+		if(!entity_try_collide_all(self, self->x + 8, self->y + 9)  ||
+			entity_try_collide_all(self, self->x + 8, self->y + 4)) {
 			self->data = 16 * 4;
 			self->data |= 0x80000000;
 		}

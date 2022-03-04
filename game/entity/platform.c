@@ -8,6 +8,8 @@
 #define PLATFORM_BIG_WIDTH 23
 #define PLATFORM_HEIGHT 4
 
+#define BIT_FALL 8
+
 USE_IMAGE(tile_platform);
 
 /* From level.c */
@@ -37,16 +39,19 @@ void entity_platform_spawn(Entity* self, int tilex, int tiley, LevelTile tiledat
 }
 
 void entity_platform_update(Entity* self, int framenum) {
-	/* Last eight bits of data are how many frames are left until platform falls */
-	if(get_fall_frames(self) > 1) {
-		set_fall_frames(self, get_fall_frames(self) - 1);
-	}
-
-	if(get_fall_frames(self) == 1) {
-		self->y++;
-
-		if(self->y > level_h(current_level) * TILE_SIZE + 10) {
-			entity_kill(self);
+	/* Last eight bits of data are how many frames platform has fallen */
+	if(self->data & BIT_FALL) {
+		/* Last minute fix to respawn platforms */
+		if(get_fall_frames(self) >= 60 * 3) {
+			self->y -= get_fall_frames(self) - 60;
+			self->data &= ~BIT_FALL;
+			set_fall_frames(self, 0);
+		}
+		else {
+			if(get_fall_frames(self) >= 60) {
+				self->y++;
+			}
+			set_fall_frames(self, get_fall_frames(self) + 1);
 		}
 	}
 }
@@ -77,9 +82,7 @@ bool entity_platform_try_collide(Entity* self, Entity* colliding_entity, int x, 
 	if(collide && colliding_entity->type == ENTITY_TYPE_PLAYER && self->data & TILE_PLATFORM_BIT_FALL) {
 		/* Only fall if player is coming from above */
 		if(colliding_entity->y < y) {
-			if(get_fall_frames(self) == 0) {
-				set_fall_frames(self, 60);
-			}
+			self->data |= BIT_FALL;
 		}
 	}
 
