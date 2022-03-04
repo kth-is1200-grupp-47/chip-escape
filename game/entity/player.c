@@ -183,6 +183,9 @@ void entity_player_kill(Entity* self) {
 	bool can_revive = data->lives_left-- > 1;
 	/* Lose 5% pts when dying */
 	data->points -= data->points / 20;
+	if(data->points < 0) {
+		data->points = 0;
+	}
 
 	/* Revive self */
 	self->type = ENTITY_TYPE_PLAYER;
@@ -255,7 +258,9 @@ void entity_player_touched_flag(Entity* self) {
 	assert(next_level != NULL || won_game);
 
 	if(won_game) {
+		self->type = ENTITY_KILLED;
 		switch_state(STATE_HIGHSCORE_LIST, (const void*)pdata.points);
+		pdata.coming_from_previous_level = false;
 	}
 	else {
 		switch_state(STATE_LEVEL, next_level);

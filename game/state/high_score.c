@@ -31,6 +31,7 @@ int hiscore_index = -1;
 /* Variable for if the game is exiting high score mode */
 bool exit = false;
 
+void high_score_put(int data, char inits[]);
 
 /* This should be run the first time game starts */
 void highscore_init(){
